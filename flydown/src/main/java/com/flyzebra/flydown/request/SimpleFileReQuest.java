@@ -1,17 +1,15 @@
 package com.flyzebra.flydown.request;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import com.flyzebra.flydown.FlyDown;
 import com.flyzebra.flydown.file.FileBlock;
 import com.flyzebra.flydown.file.FileIO;
 import com.flyzebra.flydown.file.IFileIO;
 import com.flyzebra.utils.FileUtils;
 import com.flyzebra.utils.FlyLog;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 功能说明：单个文件下载请求
@@ -83,11 +81,11 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
 		}
 
 		if (saveFile == null) {
-			saveFile = FlyDown.mCacheDir + downUrl.substring(downUrl.lastIndexOf('/') + 1, downUrl.length());
+			saveFile = FlyDown.mCacheDir +"/"+ downUrl.substring(downUrl.lastIndexOf('/') + 1, downUrl.length());
 		}
 
 		if (tempFile == null) {
-			tempFile = FlyDown.mCacheDir + "." +saveFile.substring(saveFile.lastIndexOf('/') + 1, saveFile.length()) + ".log";
+			tempFile = FlyDown.mCacheDir +"/"+ "." +saveFile.substring(saveFile.lastIndexOf('/') + 1, saveFile.length()) + ".log";
 		}
 
 		if (iFileBlockQueue == null) {
