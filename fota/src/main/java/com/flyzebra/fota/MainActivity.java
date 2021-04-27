@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.flyzebra.flydown.FlyDown;
 import com.flyzebra.flydown.request.IFileReQuestListener;
+import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FlyLog;
@@ -24,7 +25,6 @@ import com.flyzebra.utils.FlyLog;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -79,15 +79,15 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
         progressDialog.setMax(100);
         progressDialog.setTitle("正在校验安装包");
 
-        apiAction.doTheme("1", new Observer<List<String>>() {
+        apiAction.getUpVersion("1", "2",new Observer<OtaPackage>() {
             @Override
             public void onSubscribe(Disposable d) {
                 FlyLog.e("onSubscribe:"+d);
             }
 
             @Override
-            public void onNext(List<String> strings) {
-                FlyLog.e("noNext:"+strings);
+            public void onNext(OtaPackage otaPackage) {
+                FlyLog.e("noNext:"+otaPackage);
             }
 
             @Override

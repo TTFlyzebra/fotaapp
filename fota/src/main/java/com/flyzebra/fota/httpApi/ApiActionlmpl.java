@@ -1,5 +1,7 @@
 package com.flyzebra.fota.httpApi;
 
+import com.flyzebra.fota.bean.OtaPackage;
+
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -18,6 +20,15 @@ public class ApiActionlmpl implements ApiAction {
     @Override
     public void doTheme(String type, Observer<List<String>> observer) {
         mNetService.doTheme(type)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getUpVersion(String version, String androidid, Observer<OtaPackage> observer) {
+        mNetService.getUpVersion(version,androidid)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
