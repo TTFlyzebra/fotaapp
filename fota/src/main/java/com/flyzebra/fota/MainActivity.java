@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
         progressDialog.setMax(100);
         progressDialog.setTitle("正在校验安装包");
 
-        apiAction.getUpVersion("1", "2",new Observer<OtaPackage>() {
+        apiAction.getUpVersion("OC_VLTE", "2",new Observer<OtaPackage>() {
             @Override
             public void onSubscribe(Disposable d) {
                 FlyLog.e("onSubscribe:"+d);
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
             @Override
             public void onNext(OtaPackage otaPackage) {
                 FlyLog.e("noNext:"+otaPackage);
+                downFile(otaPackage);
             }
 
             @Override
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
     }
 
     public void upgrade(View view) {
-        final File updateFile = new File(getFilesDir(), "update.zip");
+        final File updateFile = new File(getFilesDir(), "11b838a85bd0a4fe979262de9c14bf.zip");
         if (updateFile.exists()) {
             vProcess.set(0);
             tHandler.post(new Runnable() {
@@ -162,10 +163,10 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
         });
     }
 
-    public void downFile() {
+    public void downFile(OtaPackage otaPackage) {
         FlyLog.d("-----start downFile-----\n");
         FlyDown.mCacheDir = getFilesDir().getAbsolutePath();
-        String downUrl = "http://192.168.8.140/version/update.zip";
+        String downUrl = otaPackage.data.downurl;
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
             public void Error(String url, int ErrorCode) {

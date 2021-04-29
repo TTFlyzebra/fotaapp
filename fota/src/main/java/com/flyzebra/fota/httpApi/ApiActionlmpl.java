@@ -27,8 +27,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void getUpVersion(String version, String androidid, Observer<OtaPackage> observer) {
-        mNetService.getUpVersion(version,androidid)
+    public void getUpVersion(String version, String systemId, Observer<OtaPackage> observer) {
+        mNetService.getUpVersion(version,systemId)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

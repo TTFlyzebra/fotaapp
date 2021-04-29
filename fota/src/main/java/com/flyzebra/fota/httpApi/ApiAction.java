@@ -12,5 +12,5 @@ import io.reactivex.Observer;
 public interface ApiAction {
     void doTheme(String type, Observer<List<String>> observer);
 
-    void getUpVersion(String version, String androidid, Observer<OtaPackage> observer);
+    void getUpVersion(String version, String systemId, Observer<OtaPackage> observer);
 }
