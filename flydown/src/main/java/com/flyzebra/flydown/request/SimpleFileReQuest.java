@@ -30,7 +30,6 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
 	private IFileIO tempFileIO;
 	
 	// 添加原子操作数判断下载是否完成
-
 	public SimpleFileReQuest(String downUrl) {
 		this.downUrl = downUrl;
 	}
@@ -85,7 +84,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
 		}
 
 		if (tempFile == null) {
-			tempFile = FlyDown.mCacheDir +"/"+ "." +saveFile.substring(saveFile.lastIndexOf('/') + 1, saveFile.length()) + ".log";
+			tempFile = FlyDown.mCacheDir +"/"+ "." +saveFile.substring(saveFile.lastIndexOf('/') + 1, saveFile.length()) + ".tmp";
 		}
 
 		if (iFileBlockQueue == null) {
@@ -117,7 +116,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
 	@Override
 	public void finish(FileBlock fileBlock) {
 		if (iFileBlockQueue.getBlockSum() == 0) {
-			iFileReQuestListener.Finish(downUrl);
+			iFileReQuestListener.Finish(saveFile);
 			try {
 				saveFileIO.close();
 				tempFileIO.close();
@@ -132,7 +131,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
 
 	@Override
 	public void progress(FileBlock fileBlock) {
-		FlyLog.d("download = %d\n",fileBlock.getStaPos());
+//		FlyLog.d("download = %d\n",fileBlock.getStaPos());
 	}
 
 	@Override

@@ -15,21 +15,14 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.flyzebra.flydown.FlyDown;
-import com.flyzebra.flydown.request.IFileReQuestListener;
-import com.flyzebra.fota.bean.OtaPackage;
-import com.flyzebra.fota.httpApi.ApiAction;
-import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.IDUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity implements RecoverySystem.ProgressListener {
 
@@ -39,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
     };
     private static int REQUEST_PERMISSION_CODE = 101;
 
-    private static final HandlerThread mTaskThread = new HandlerThread("HeartBeat_Task");
+    private static final HandlerThread mTaskThread = new HandlerThread("fota_Task");
 
     static {
         mTaskThread.start();
@@ -51,9 +44,6 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private ProgressDialog progressDialog;
-    
-    private ApiAction apiAction = new ApiActionlmpl();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,28 +69,10 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
         progressDialog.setMax(100);
         progressDialog.setTitle("正在校验安装包");
 
-        apiAction.getUpVersion("OC_VLTE", "2",new Observer<OtaPackage>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                FlyLog.e("onSubscribe:"+d);
-            }
 
-            @Override
-            public void onNext(OtaPackage otaPackage) {
-                FlyLog.e("noNext:"+otaPackage);
-                downFile(otaPackage);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                FlyLog.e("onError:"+e);
-            }
-
-            @Override
-            public void onComplete() {
-                FlyLog.e("onComplete");
-            }
-        });
+        FlyLog.d("IMEI=%s", IDUtils.getIMEI(this));
+        FlyLog.d("IMSI=%s", IDUtils.getIMSI(this));
+        FlyLog.d("AndroidID=%s", IDUtils.getAndroidID(this));
     }
 
     @Override
@@ -112,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
     }
 
     public void upgrade(View view) {
-        final File updateFile = new File(getFilesDir(), "11b838a85bd0a4fe979262de9c14bf.zip");
+        final File updateFile = new File("/data/update.zip");
         if (updateFile.exists()) {
             vProcess.set(0);
             tHandler.post(new Runnable() {
@@ -161,34 +133,6 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
                 }
             }
         });
-    }
-
-    public void downFile(OtaPackage otaPackage) {
-        FlyLog.d("-----start downFile-----\n");
-        FlyDown.mCacheDir = getFilesDir().getAbsolutePath();
-        String downUrl = otaPackage.data.downurl;
-        IFileReQuestListener listener = new IFileReQuestListener() {
-            @Override
-            public void Error(String url, int ErrorCode) {
-                FlyLog.e("--onError----%s,%d\n", url, ErrorCode);
-            }
-
-            @Override
-            public void Finish(String url) {
-                FlyLog.e("--onFinish----%s\n", url);
-            }
-
-            @Override
-            public void Pause(String url) {
-                FlyLog.e("--onPause----%s\n", url);
-            }
-
-            @Override
-            public void Progress(String url, long downBytes, long sumBytes) {
-                FlyLog.e("url=%s, downBytes=%d, sumBytes=%d", url, downBytes, sumBytes);
-            }
-        };
-        FlyDown.load(downUrl).setThread(10).listener(listener).goStart();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     private void startMyself(Context context){
         Intent mainintent = new Intent();
-        mainintent.setClass(context, MainService.class);
+        mainintent.setClass(context.getApplicationContext(), MainService.class);
         mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startService(mainintent);
     }

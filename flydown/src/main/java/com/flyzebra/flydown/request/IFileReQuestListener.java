@@ -8,7 +8,7 @@ public interface IFileReQuestListener {
 
 	public void Error(String url,int ErrorCode);
 	
-	public void Finish(String url);
+	public void Finish(String savePath);
 	
 	public void Pause(String url);
 	
