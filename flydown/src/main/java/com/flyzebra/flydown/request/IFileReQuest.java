@@ -14,14 +14,15 @@ public interface IFileReQuest {
 	IFileReQuest setUrl(String downUrl);
 	
 	/**
-	 * 设置保存的文件的路径
-	 * @param saveFile
+	 * 设置保存的文件名称
+	 * @param fileName
 	 * @return
 	 */
-	IFileReQuest setSaveFile(String saveFile);
+	IFileReQuest setFileName(String fileName);
 	
 	IFileReQuest setThread(int threadNum);
-	
+
+	IFileReQuest setFileSize(int fileSize);
 	
 	/**
 	 * 设置文件下载状态监听
@@ -33,7 +34,7 @@ public interface IFileReQuest {
 	/**
 	 * 开始执行文件下载任务
 	 */
-	void goStart();
+	void start();
 	
 	/**
 	 * 取消下载任务

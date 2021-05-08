@@ -1,20 +1,17 @@
 package com.flyzebra.flydown.network;
 
+import com.flyzebra.flydown.file.FileBlock;
+import com.flyzebra.flydown.file.IFileIO;
+import com.flyzebra.flydown.request.IFileBlockReQuestListener;
+import com.flyzebra.utils.CloseableUtil;
+import com.flyzebra.utils.FlyLog;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import com.flyzebra.flydown.file.FileBlock;
-import com.flyzebra.flydown.file.IFileIO;
-import com.flyzebra.flydown.request.IFileBlockReQuestListener;
-import com.flyzebra.utils.CloseableUtil;
-import com.flyzebra.utils.FlyLog;
 
 /**
  * 功能说明：
@@ -81,9 +78,9 @@ public class HttpDownTask implements IDownTask, Runnable {
 				while (!isCancel&& fileBlock.getStaPos() <= fileBlock.getEndPos()&&(nRead = ins.read(b, 0, 1024)) > 0) {
 					saveFileIO.save(b, fileBlock.getStaPos(), nRead);
 					fileBlock.setStaPos(fileBlock.getStaPos() + nRead);
-					if (iFileBlockReQuestListener != null) {
-						iFileBlockReQuestListener.progress(fileBlock);
-					}
+//					if (iFileBlockReQuestListener != null) {
+//						iFileBlockReQuestListener.progress(fileBlock);
+//					}
 					if (fileBlock.getEndPos() != Long.MAX_VALUE) {
 						tempFileIO.save(fileBlock);
 					}

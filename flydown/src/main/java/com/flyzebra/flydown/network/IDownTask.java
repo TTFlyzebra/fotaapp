@@ -19,11 +19,8 @@ public interface IDownTask {
 	
 	IDownTask setFileBlock(FileBlock fileBlock);
 	
-	IDownTask setFileBlockReQuestListener(IFileBlockReQuestListener iFileBlockEnvent); 
-	/**
-	 * 處理下載
-	 * @param downRequest
-	 */
+	IDownTask setFileBlockReQuestListener(IFileBlockReQuestListener iFileBlockEnvent);
+
 	void handle();
 	
 	void cancle();

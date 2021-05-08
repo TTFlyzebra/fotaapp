@@ -16,12 +16,12 @@ public interface IFileIO {
 	 * @param len 写入文件的长度
 	 */
 	void save(byte b[],long start,int len) throws IOException;
-	
-	
+
 	void close() throws IOException;
 	
 	String readAll();
 
-
 	void save(FileBlock fileBlock) throws IOException;
+
+	int blockSize();
 }

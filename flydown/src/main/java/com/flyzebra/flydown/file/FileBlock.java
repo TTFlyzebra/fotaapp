@@ -8,10 +8,15 @@ public class FileBlock {
 	//开始位置
 	private long staPos = 0;
 	//结速位置
-	private long endPos = 0;	
+	private long endPos = 0;
 	private int state = 0;//下载状态 0xff下载完成//下载状态0xfe 不支持断点续传
 	private int tag = 0;
 	private int order = 0;
+
+	public static int size() {
+		return 48;
+	}
+
 	public long getStaPos() {
 		return staPos;
 	}

@@ -9,6 +9,8 @@ import com.flyzebra.flydown.file.IFileIO;
  * @version 创建时间：2017年3月22日 下午2:59:37
  */
 public interface IFileBlockQueue {
+	int BLOCK_NUM = 100;
+
 	IFileBlockQueue setUrl(String downUrl);
 
 	IFileBlockQueue setSaveFileIO(IFileIO saveFileIO);

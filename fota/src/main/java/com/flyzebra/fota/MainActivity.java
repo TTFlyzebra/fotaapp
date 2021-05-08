@@ -16,12 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.IDUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity implements RecoverySystem.ProgressListener {
@@ -39,10 +37,8 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
     }
 
     private static final Handler tHandler = new Handler(mTaskThread.getLooper());
-    private AtomicBoolean isRun = new AtomicBoolean(false);
     private AtomicInteger vProcess = new AtomicInteger(0);
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
-
     private ProgressDialog progressDialog;
 
     @Override
@@ -68,11 +64,6 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMax(100);
         progressDialog.setTitle("正在校验安装包");
-
-
-        FlyLog.d("IMEI=%s", IDUtils.getIMEI(this));
-        FlyLog.d("IMSI=%s", IDUtils.getIMSI(this));
-        FlyLog.d("AndroidID=%s", IDUtils.getAndroidID(this));
     }
 
     @Override
@@ -98,10 +89,8 @@ public class MainActivity extends AppCompatActivity implements RecoverySystem.Pr
                         } else {
                             FlyLog.e("verifyPackage failed!");
                         }
-                    } catch (GeneralSecurityException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (GeneralSecurityException | IOException e) {
+                        FlyLog.e(e.toString());
                     }
                 }
             });

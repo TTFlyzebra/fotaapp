@@ -1,13 +1,13 @@
 package com.flyzebra.flydown.file;
 
+import com.flyzebra.utils.FlyLog;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import com.flyzebra.utils.FlyLog;
-
 /**
  * 功能说明：
- * 
+ *
  * @author 作者：FlyZebra
  * @version 创建时间：2017年3月21日 上午11:22:34
  */
@@ -54,6 +54,11 @@ public class FileIO implements IFileIO {
 	public void save(FileBlock fileBlock) throws IOException {
 		byte t[] = fileBlock.toString().getBytes();
 		save(t, fileBlock.getOrder()*t.length, t.length);
+	}
+
+	@Override
+	public int blockSize() {
+		return FileBlock.size();
 	}
 
 }

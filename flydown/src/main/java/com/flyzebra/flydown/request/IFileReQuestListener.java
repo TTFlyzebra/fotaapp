@@ -6,12 +6,10 @@ package com.flyzebra.flydown.request;
 */
 public interface IFileReQuestListener {
 
-	public void Error(String url,int ErrorCode);
+	public void error(String url, int ErrorCode);
 	
-	public void Finish(String savePath);
+	public void finish(String savePath);
 	
-	public void Pause(String url);
-	
-	public void Progress(String url, long downBytes, long sumBytes);
+	public void progress(int progress);
 	
 }

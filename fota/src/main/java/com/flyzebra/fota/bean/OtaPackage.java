@@ -17,18 +17,20 @@ public class OtaPackage {
     public class Data {
         public String version;
         public String downurl;
+        public int filesize;
         public String md5sum;
+        public String oldver;
         public int autoup;
-        public String oldversion;
 
         @Override
         public String toString() {
             return "{" +
                     "\"version\":\"" + version + '\"' +
                     ", \"downurl\":\"" + downurl + '\"' +
-                    ", \"autoup\":" + autoup +
+                    ", \"filesize\":" + filesize +
                     ", \"md5sum\":\"" + md5sum + '\"' +
-                    ", \"oldver\":\"" + oldversion + '\"' +
+                    ", \"oldver\":\"" + oldver + '\"' +
+                    ", \"autoup\":" + autoup +
                     '}';
         }
     }
