@@ -1,6 +1,9 @@
 package com.flyzebra.fota.model;
 
 
+import android.content.Context;
+
+import com.flyzebra.fota.bean.OtaPackage;
 
 /**
  *
@@ -8,37 +11,60 @@ package com.flyzebra.fota.model;
  */
 public interface IFlyup {
 
+    /**
+     * 初始化
+     * @param context
+     */
+    void init(Context context);
 
     /**
      * 启动更线线程
      *
-     * @param upResult 更新结果的回调通知
      */
-    void startUpVersion(FlyupResult upResult);
+    void startUpVersion();
 
     /**
-     * 返回更新状态
+     * 启动更线线程
      *
-     * @return true:正在更新
-     * false:不是处于更新状态
      */
-    boolean isUPVeriosnRunning();
+    void startUpVersion(OtaPackage otaPackage);
 
     /**
      * 取消所有网络请求线程
      */
-    void cancelAllTasks();
+    void stopUpVersion();
+
+    /**
+     * 返回更新状态
+     * @return true:正在更新
+     * false:不是处于更新状态
+     */
+    boolean isUpVeriosnRunning();
+
+
+    /**
+     * 注册状态监听
+     * @param flyupResult
+     */
+    void addListener(FlyupResult flyupResult);
+
+
+    /**
+     * 取消状态监听
+     * @param flyupResult
+     */
+    void removeListener(FlyupResult flyupResult);
 
 
     interface FlyupResult {
 
         /**
          * 更新进度
-         * @param msg
-         * @param sum
+         * @param code
          * @param progress
+         *@param msg
          */
-        void upVesionProgress(String msg, int sum, int progress);
+        void upVesionProgress(int code, int progress,String msg);
     }
 
 }

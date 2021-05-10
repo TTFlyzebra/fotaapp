@@ -53,7 +53,7 @@ public class NotificationView {
         PendingIntent nextPI = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteviews.setOnClickPendingIntent(R.id.noti_icon, nextPI);
         remoteviews.setTextViewText(R.id.noti_msg, "正在升级系统");
-        remoteviews.setProgressBar(R.id.noti_pbar, 100,50, false);
+        remoteviews.setProgressBar(R.id.noti_pbar, 100, 1, false);
         remoteviews.setImageViewResource(R.id.noti_icon, R.drawable.ic_launcher_background);
         Intent notiintent = new Intent(context, MainActivity.class);
         notiintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -67,17 +67,21 @@ public class NotificationView {
             noti = new Notification.Builder(context, "upgrade")
                     .setCustomContentView(remoteviews)
                     .setContentIntent(PdIntent)
+                    .setOngoing(true)
                     .build();
         } else {
             noti = new Notification.Builder(context)
                     .setContent(remoteviews)
                     .setContentIntent(PdIntent)
+                    .setOngoing(true)
                     .build();
         }
         noti.icon = android.R.drawable.ic_media_play;
     }
 
-    public void show() {
+    public void show(int code, int progress, String msg) {
+        remoteviews.setTextViewText(R.id.noti_msg, msg);
+        remoteviews.setProgressBar(R.id.noti_pbar, 100, progress, false);
         notimanager.notify(NOTIFICATION_ID, noti);
     }
 
