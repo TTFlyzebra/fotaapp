@@ -15,7 +15,7 @@ public class FileIO implements IFileIO {
 	private RandomAccessFile mRandomAccessFile;
 
 	public FileIO(String fileName) throws IOException {
-		mRandomAccessFile = new RandomAccessFile(fileName, "rw");
+		mRandomAccessFile = new RandomAccessFile(fileName, "rwd");
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class FileIO implements IFileIO {
 	public String readAll() {
 		String readStr = null;
 		try {
-			byte b[] = new byte[1024];
+			byte[] b = new byte[1024];
 			int byteread = 0;
 			StringBuilder stringBuilder = new StringBuilder();
 			while ((byteread = mRandomAccessFile.read(b)) != -1) {
@@ -52,7 +52,7 @@ public class FileIO implements IFileIO {
 
 	@Override
 	public void save(FileBlock fileBlock) throws IOException {
-		byte t[] = fileBlock.toString().getBytes();
+		byte[] t = fileBlock.toString().getBytes();
 		save(t, fileBlock.getOrder()*t.length, t.length);
 	}
 

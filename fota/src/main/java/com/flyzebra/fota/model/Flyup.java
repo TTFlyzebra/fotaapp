@@ -7,9 +7,9 @@ import android.os.Looper;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FlyUpdate {
+public class Flyup implements IFlyup{
 
-    private static final HandlerThread mTaskThread = new HandlerThread("HeartBeat_Task");
+    private static final HandlerThread mTaskThread = new HandlerThread("FlyUP_Task");
 
     static {
         mTaskThread.start();
@@ -20,7 +20,27 @@ public class FlyUpdate {
     private AtomicInteger vProcess = new AtomicInteger(0);
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private IFlyUpdateListener iFlyUpdateListener;
+    @Override
+    public void startUpVersion(FlyupResult upResult) {
 
+    }
+
+    @Override
+    public boolean isUPVeriosnRunning() {
+        return false;
+    }
+
+    @Override
+    public void cancelAllTasks() {
+
+    }
+
+    private static class FlyUpdateHolder {
+        public static final Flyup sInstance = new Flyup();
+    }
+
+    public static Flyup getInstance() {
+        return Flyup.FlyUpdateHolder.sInstance;
+    }
 
 }

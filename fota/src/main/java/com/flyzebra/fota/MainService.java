@@ -15,6 +15,7 @@ import com.flyzebra.flydown.request.IFileReQuestListener;
 import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
+import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FileUtils;
 import com.flyzebra.utils.FlyLog;
 import com.flyzebra.utils.IDUtils;
@@ -58,6 +59,8 @@ public class MainService extends Service implements Runnable {
 
     private static final int CHECK_TIME = 60000 * 60 * 1;
 
+    private NotificationView notificationView;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -67,6 +70,9 @@ public class MainService extends Service implements Runnable {
     public void onCreate() {
         super.onCreate();
         FlyDown.mCacheDir = getFilesDir().getAbsolutePath();
+
+        notificationView = new NotificationView(this);
+
         sid = "OC_VLTE";
         ver = SystemPropTools.get("persist.vendor.display.id", "CM3003_V5.0.0_20210010100_USER");
         imei = IDUtils.getIMEI(this);
@@ -80,10 +86,19 @@ public class MainService extends Service implements Runnable {
         dialog.setMax(100);
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         mHandler.post(this);
+
+        notificationView.show();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+        notificationView.hide();
+
         tHandler.removeCallbacksAndMessages(null);
         mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
@@ -116,7 +131,7 @@ public class MainService extends Service implements Runnable {
                 @Override
                 public void onNext(OtaPackage otaPackage) {
                     if (otaPackage.code == 0) {
-                        FlyLog.d("get new version: %s", otaPackage.data.version);
+                        FlyLog.d("Get version ok, %s", otaPackage.data.version);
                         mOtaPackage = otaPackage;
                         dialog.show();
                         File saveFile = new File(FlyDown.mCacheDir + "/" + otaPackage.data.md5sum + ".zip");
@@ -132,7 +147,12 @@ public class MainService extends Service implements Runnable {
                             downOtaFile(mOtaPackage);
                         }
 
-                    } else {
+                    } else if(otaPackage.code == 1) {
+                        FlyLog.d("Get version ok, %s", otaPackage.msg);
+                        dialog.dismiss();
+                        isUpdaterRunning.set(false);
+                        FlyDown.delAllDownFile();
+                    }else{
                         FlyLog.e("Get version failed! %s", otaPackage.msg);
                         dialog.dismiss();
                         isUpdaterRunning.set(false);
@@ -142,7 +162,7 @@ public class MainService extends Service implements Runnable {
 
                 @Override
                 public void onError(Throwable e) {
-                    FlyLog.e("onErro:" + e.toString());
+                    FlyLog.e("onError:" + e.toString());
                     isUpdaterRunning.set(false);
                 }
 
