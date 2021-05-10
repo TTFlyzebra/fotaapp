@@ -86,7 +86,7 @@ public class Flyup implements IFlyup, IFlyCode {
             @Override
             public void onNext(OtaPackage otaPackage) {
                 if (otaPackage.code == 0) {
-                    notifyListener(CODE_02, 0, "获取到新版本："+otaPackage.data.version);
+                    notifyListener(CODE_02, 0, "发现新版本"+otaPackage.data.version);
                     File saveFile = new File(FlyDown.mCacheDir + "/" + otaPackage.data.md5sum + ".zip");
                     File tempFile = new File(FlyDown.mCacheDir + "/" + otaPackage.data.md5sum + ".fly");
                     if (saveFile.exists() && !tempFile.exists()) {
@@ -201,7 +201,7 @@ public class Flyup implements IFlyup, IFlyCode {
 
             @Override
             public void finish(String saveName) {
-                notifyListener(CODE_05, 100, "正在下载更新包......");
+                notifyListener(CODE_05, 100, "更新包下载完成......");
                 tHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -225,6 +225,7 @@ public class Flyup implements IFlyup, IFlyCode {
             public void run() {
                 String md5sum = FileUtils.getFileMD5(saveName);
                 if (md5sum.equals(otaPackage.data.md5sum)) {
+                    notifyListener(CODE_07, 100, "更新包MD5值校验成功!");
                     try {
                         final File file = new File(saveName);
                         notifyListener(CODE_09, 0, "更新包数据完成性校验......");

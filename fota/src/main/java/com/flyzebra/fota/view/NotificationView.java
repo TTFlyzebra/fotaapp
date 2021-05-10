@@ -52,8 +52,8 @@ public class NotificationView {
         intent.putExtra("ACTION", "CANCEL");
         PendingIntent nextPI = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteviews.setOnClickPendingIntent(R.id.noti_icon, nextPI);
-        remoteviews.setTextViewText(R.id.noti_msg, "正在升级系统");
-        remoteviews.setProgressBar(R.id.noti_pbar, 100, 1, false);
+        remoteviews.setTextViewText(R.id.noti_msg, "");
+        remoteviews.setProgressBar(R.id.noti_pbar, 100, 0, false);
         remoteviews.setImageViewResource(R.id.noti_icon, R.drawable.ic_launcher_background);
         Intent notiintent = new Intent(context, MainActivity.class);
         notiintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -61,7 +61,7 @@ public class NotificationView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "upgrade";
             String channelName = "升级系统";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
             notimanager.createNotificationChannel(channel);
             noti = new Notification.Builder(context, "upgrade")

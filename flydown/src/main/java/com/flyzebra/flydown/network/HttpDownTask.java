@@ -73,9 +73,9 @@ public class HttpDownTask implements IDownTask, Runnable {
 			// urlConnection.setDoInput(true);
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK||con.getResponseCode() == HttpURLConnection.HTTP_PARTIAL) {
 				ins = con.getInputStream();
-				byte[] b = new byte[2048];
+				byte[] b = new byte[4096];
 				int nRead = 0;
-				while (!isCancel&& fileBlock.getStaPos() <= fileBlock.getEndPos()&&(nRead = ins.read(b, 0, 1024)) > 0) {
+				while (!isCancel&& fileBlock.getStaPos() <= fileBlock.getEndPos()&&(nRead = ins.read(b, 0, 4096)) > 0) {
 					saveFileIO.save(b, fileBlock.getStaPos(), nRead);
 					fileBlock.setStaPos(fileBlock.getStaPos() + nRead);
 //					if (iFileBlockReQuestListener != null) {
