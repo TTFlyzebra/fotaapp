@@ -7,13 +7,12 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 
-import com.flyzebra.fota.httpApi.ApiAction;
-import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyCode;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
+
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, IFlyCode {
     private static final HandlerThread mTaskThread = new HandlerThread("fota_service");
@@ -24,10 +23,8 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     private static final Handler tHandler = new Handler(mTaskThread.getLooper());
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
-    private ApiAction apiAction = new ApiActionlmpl();
 
     private static final int CHECK_TIME = 60000 * 60 * 1;
-
     private NotificationView notificationView;
 
     @Override
@@ -69,52 +66,55 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         switch (code) {
             //已是最新版本
             case CODE_01:
-                tHandler.postDelayed(this,CHECK_TIME);
+                tHandler.postDelayed(this, CHECK_TIME);
                 break;
             //获取到最新版本
             case CODE_02:
-                notificationView.show(code,progress,msg);
+                notificationView.show(code, progress, msg);
                 break;
             //获取最新版本失败
             case CODE_03:
-                tHandler.postDelayed(this,CHECK_TIME);
+                tHandler.postDelayed(this, CHECK_TIME);
                 break;
-            //获取最新版本，网络错误！
+            //获取最新版本失败，网络错误！
             case CODE_04:
-                tHandler.postDelayed(this,20000);
+                tHandler.postDelayed(this, 20000);
                 break;
-            //正在下载更新包......
+            //正在下载升级包......
             case CODE_05:
-                notificationView.show(code,progress,msg);
+                notificationView.show(code, progress, msg);
                 break;
-            //下载更新包出错!
+            //下载升级包出错!
             case CODE_06:
-                tHandler.postDelayed(this,10000);
+                tHandler.postDelayed(this, 10000);
                 break;
-            //正在校验更新包MD5值......
+            //正在校验升级包MD5值......
             case CODE_07:
-                notificationView.show(code,progress,msg);
+                notificationView.show(code, progress, msg);
                 break;
-            //更新包MD5值校验错误!
+            //升级包MD5值校验错误!
             case CODE_08:
-                tHandler.postDelayed(this,10000);
+                tHandler.postDelayed(this, 10000);
                 break;
-            //更新包数据完成性校验......
+            //升级包数据校验......
             case CODE_09:
-                notificationView.show(code,progress,msg);
+                notificationView.show(code, progress, msg);
                 break;
-            //准备安装更新包......
+            //安装升级包......
             case CODE_10:
-                notificationView.show(code,progress,msg);
+                notificationView.show(code, progress, msg);
                 break;
-            //更新包数据完成性校验错误!
+            //升级包数据校验错误!
             case CODE_11:
                 break;
-            //安装更新包错误!
+            //安装升级包错误!
             case CODE_12:
                 break;
             //系统正在更新
             case CODE_91:
+                break;
+            //需要手动更新版本
+            case CODE_92:
                 break;
         }
     }

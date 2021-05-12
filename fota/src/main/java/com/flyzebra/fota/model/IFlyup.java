@@ -43,11 +43,36 @@ public interface IFlyup {
 
 
     /**
+     * 获取当前更新信息
+     */
+    OtaPackage getOtaPackage();
+
+    /**
+     * 返回进度信息
+     */
+    int getLastCode();
+
+    /**
+     * 返回进度信息
+     */
+    int getLastProgress();
+
+    /**
+     * 返回进度信息
+     */
+    String  getLastMessage();
+
+    /**
+     * 更新服务器日志信息
+     * @param event
+     * @param emsg
+     */
+    void upPhoneLog(int event, String emsg);
+    /**
      * 注册状态监听
      * @param flyupResult
      */
     void addListener(FlyupResult flyupResult);
-
 
     /**
      * 取消状态监听

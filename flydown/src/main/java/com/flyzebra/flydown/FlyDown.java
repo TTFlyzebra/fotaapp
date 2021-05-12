@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @version 创建时间：2017年2月27日 上午11:57:27
  */
 public class FlyDown {
-    public static String mCacheDir = "/sdcard/downtest/";
+    public static String mCacheDir = "/data/cache/recovery";
     private static HashMap<String, IFileReQuest> downQuests = new HashMap<>();
 
     FlyDown setCacheDir(String path) {
@@ -44,6 +44,24 @@ public class FlyDown {
         } else {
             file.delete();
         }
+    }
+
+    public static void delDownFile(String fileName) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String saveName = FlyDown.mCacheDir + "/" + fileName + ".zip";
+                File f1 = new File(saveName);
+                if(f1.exists()){
+                    f1.delete();
+                }
+                String tempFile = FlyDown.mCacheDir + "/" + fileName + ".fly";
+                File f2 = new File(tempFile);
+                if(f2.exists()){
+                    f2.delete();
+                }
+            }
+        }).start();
     }
 
     public static void delAllDownFile() {

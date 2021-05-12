@@ -6,16 +6,19 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyCode;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.SystemPropTools;
 
 public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResult, IFlyCode {
     private static String[] PERMISSIONS_STORAGE = {
@@ -24,19 +27,20 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
     };
     private static int REQUEST_PERMISSION_CODE = 101;
 
-    private TextView tv_verinfo,tv_upinfo;
+    private TextView tv_version, tv_verinfo, tv_upinfo;
     private ProgressBar progressBar;
+    private Button bt_updater;
+
+    private StringBuffer verinfo = new StringBuffer();
+
+    private String version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv_verinfo = findViewById(R.id.tv_verinfo);
-        tv_upinfo = findViewById(R.id.tv_upinfo);
-        progressBar = findViewById(R.id.ac_pbar);
-
-        progressBar.setMax(100);
+        version = SystemPropTools.get("persist.vendor.display.id", "CM3003_V1.0.0_20210010000_USER");
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             for (String s : PERMISSIONS_STORAGE) {
@@ -47,13 +51,41 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
             }
         }
 
-        Flyup.getInstance().addListener(this);
-
         Intent mainintent = new Intent();
         mainintent.setClass(this, MainService.class);
         mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startService(mainintent);
 
+        tv_version = findViewById(R.id.tv_version);
+        tv_verinfo = findViewById(R.id.tv_verinfo);
+        tv_upinfo = findViewById(R.id.tv_upinfo);
+        progressBar = findViewById(R.id.ac_pbar);
+        bt_updater = findViewById(R.id.bt_updater);
+        progressBar.setMax(100);
+
+        Flyup.getInstance().addListener(this);
+
+        tv_version.setText("当前版本：\n" + version + "\n");
+        tv_upinfo.setText(Flyup.getInstance().getLastMessage());
+        progressBar.setProgress(Flyup.getInstance().getLastProgress());
+
+        upVersionInfo();
+    }
+
+    private void upVersionInfo() {
+        OtaPackage otaPackage = Flyup.getInstance().getOtaPackage();
+        if (otaPackage != null && otaPackage.data.version != null) {
+            verinfo.delete(0, verinfo.length());
+            verinfo.append("最新版本：\n")
+                    .append(otaPackage.data.version).append("\n");
+            if (otaPackage.code == 0) {
+                verinfo.append("文件大小").append(otaPackage.data.filesize / 1024 / 1024).append("M --- ")
+                        .append(otaPackage.data.otaType == 0 ? "全量升级包" : "增量升级包").append("\n\n")
+                        .append("发布说明：\n")
+                        .append("").append(otaPackage.data.releaseNote);
+            }
+        }
+        tv_verinfo.setText(verinfo.toString());
     }
 
     @Override
@@ -65,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
     }
 
     public void upgrade(View view) {
-        Flyup.getInstance().startUpVersion();
+        Flyup.getInstance().startUpVersion(Flyup.getInstance().getOtaPackage());
     }
 
 
@@ -77,47 +109,60 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
 
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
+        if (progress == 0 || progress == 100) {
+            Flyup.getInstance().upPhoneLog(code, msg);
+        }
         tv_upinfo.setText(msg);
         progressBar.setProgress(progress);
         switch (code) {
             //已是最新版本
             case CODE_01:
+                bt_updater.setText("检查更新");
+                upVersionInfo();
                 break;
             //获取到最新版本
             case CODE_02:
+                upVersionInfo();
                 break;
             //获取最新版本失败
             case CODE_03:
+                bt_updater.setText("检查更新");
+                upVersionInfo();
                 break;
-            //获取最新版本，网络错误！
+            //获取最新版本失败，网络错误！
             case CODE_04:
+                bt_updater.setText("检查更新");
                 break;
-            //正在下载更新包......
+            //正在下载升级包......
             case CODE_05:
                 break;
-            //下载更新包出错!
+            //下载升级包出错!
             case CODE_06:
                 break;
-            //正在校验更新包MD5值......
+            //正在校验升级包MD5值......
             case CODE_07:
                 break;
-            //更新包MD5值校验错误!
+            //升级包MD5值校验错误!
             case CODE_08:
                 break;
-            //更新包数据完成性校验......
+            //升级包数据校验......
             case CODE_09:
                 break;
-            //准备安装更新包......
+            //准备安装升级包......
             case CODE_10:
                 break;
-            //更新包数据完成性校验错误!
+            //升级包数据校验错误!
             case CODE_11:
                 break;
-            //安装更新包错误!
+            //安装升级包错误!
             case CODE_12:
                 break;
             //系统正在更新
             case CODE_91:
+                break;
+            //需要手动更新版本
+            case CODE_92:
+                bt_updater.setText("升级系统");
                 break;
         }
     }

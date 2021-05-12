@@ -37,7 +37,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
         this.downUrl = downUrl;
     }
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(8);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     @Override
     public SimpleFileReQuest setUrl(String downUrl) {

@@ -139,3 +139,26 @@
 #Tencent bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly**{*;}
+
+#retrofit2
+-dontwarn retrofit2.**
+-dontwarn org.robovm.**
+-keep class retrofit2** { *; }
+-keep class org.robovm** { *; }
+
+#okhttp3
+-dontwarn com.squareup.**
+-dontwarn sun.security.**
+-dontwarn okio.**
+-dontwarn okhttp3.**
+-keep class com.squareup** { *;}
+-keep class sun.security** { *;}
+-keep class okhttp3** { *;}
+-keep class okio** { *;}
+
+#rxjava2
+-dontwarn io.reactivex.**
+-keep class io.reactivex** { *; }
+
+#my app
+-keep class com.flyzebra.fota.bean** { *; }
