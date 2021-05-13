@@ -37,6 +37,10 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void onCreate() {
         super.onCreate();
+        FlyLog.e("+++++++++++++++++++++++++++++++++++");
+        FlyLog.e("+++++version 1.01---2021.05.26+++++");
+        FlyLog.e("+++++++++++++++++++++++++++++++++++");
+        FlyLog.e("++video decoder sevice is start!+++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
         tHandler.postDelayed(this, Math.max(MIN_TIME, (int) (Math.random() * FIRST_TIME)));
