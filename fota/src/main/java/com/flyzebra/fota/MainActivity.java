@@ -60,8 +60,12 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
         progressBar = findViewById(R.id.ac_pbar);
         bt_updater = findViewById(R.id.bt_updater);
         progressBar.setMax(100);
-        tv_version.setText("当前版本：\n" + IDUtils.getVersion(this) + "\n");
+        tv_version.setText("当前版本：\n" + IDUtils.getVersion(this) + "\n"
+                +"IMEI:"+IDUtils.getIMEI(this) + "\n"
+                +"MYID:"+IDUtils.getAndroidID(this) + "\n"
+        );
 
+        upVersionInfo();
         Flyup.getInstance().addListener(this);
         upVesionProgress(Flyup.getInstance().getLastCode(),Flyup.getInstance().getLastProgress(),Flyup.getInstance().getLastMessage());
     }

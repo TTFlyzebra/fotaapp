@@ -214,12 +214,7 @@ public class Flyup implements IFlyup, IFlyCode {
             @Override
             public void finish(String saveName) {
                 notifyListener(CODE_05, 100, "升级包下载完成...");
-                tHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        verityOtaFile(otaPackage);
-                    }
-                });
+                verityOtaFile(otaPackage);
             }
 
             @Override
@@ -277,7 +272,7 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     public void upPhoneLog(int event, String emsg) {
-        if (mOtaPackage == null || mOtaPackage.data == null ) {
+        if (mOtaPackage == null || mOtaPackage.data == null) {
             FlyLog.e("no phoneId for upPhoneLog!");
             return;
         }

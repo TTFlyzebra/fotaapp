@@ -8,12 +8,14 @@ package com.flyzebra.utils; /**
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 /**
  * 获取手机信息工具类
+ *
  * @author HLQ
  * @createtime 2016-12-7下午2:06:03
  * @remarks
@@ -21,6 +23,7 @@ import android.text.TextUtils;
 public class IDUtils {
     /**
      * 获取手机型号,兼容云手机
+     *
      * @param context
      * @return
      */
@@ -38,12 +41,13 @@ public class IDUtils {
 
     /**
      * 获取版本号，兼容云手机
+     *
      * @param context
      * @return
      */
     public static String getVersion(Context context) {
         String version = SystemPropUtils.get("persist.vendor.display.id", "");
-        if(TextUtils.isEmpty(version)){
+        if (TextUtils.isEmpty(version)) {
             version = SystemPropUtils.get("ro.build.display.id", "");
         }
         return version.toUpperCase();
@@ -51,7 +55,7 @@ public class IDUtils {
 
     public static String getSnUid(Context context) {
         String snuid = SystemPropUtils.get("persist.radio.mcwill.pid", "").replace(".", "").trim();
-        if(TextUtils.isEmpty(snuid)){
+        if (TextUtils.isEmpty(snuid)) {
             snuid = SystemPropUtils.get("persist.sys.nv.sn", "");
         }
         return snuid.toUpperCase();
@@ -59,27 +63,42 @@ public class IDUtils {
 
     /**
      * 获取手机IMEI
+     *
      * @param context
      * @return
      */
     @SuppressLint("HardwareIds")
     public static String getIMEI(Context context) {
+        String imei = null;
         try {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            String imei = tm.getDeviceId();
-            if (TextUtils.isEmpty(imei)) {
-                return  "";
-            }else{
-                return imei.toUpperCase();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+                    imei = tm.getImei(0);
+                } catch (Exception e) {
+                    FlyLog.e(e.toString());
+                }
+                try {
+                    if (TextUtils.isEmpty(imei)) imei = tm.getImei(1);
+                } catch (Exception e) {
+                    FlyLog.e(e.toString());
+                }
+            } else {
+                imei = tm.getDeviceId();
             }
+            if (TextUtils.isEmpty(imei))
+                imei = "";
         } catch (Exception e) {
-            e.printStackTrace();
+            FlyLog.e(e.toString());
             return "";
         }
+        FlyLog.d("getIMEI=" + imei);
+        return imei.toUpperCase();
     }
 
     /**
      * 获取手机IMSI
+     *
      * @param context
      */
     public static String getIMSI(Context context) {
@@ -88,8 +107,8 @@ public class IDUtils {
             //获取IMSI号
             String imsi = telephonyManager.getSubscriberId();
             if (TextUtils.isEmpty(imsi)) {
-                return  "";
-            }else{
+                return "";
+            } else {
                 return imsi.toUpperCase();
             }
         } catch (Exception e) {
@@ -100,6 +119,7 @@ public class IDUtils {
 
     /**
      * 获取设备系统版本号
+     *
      * @return 设备系统版本号
      */
     public static int getSDKVersion() {
@@ -108,15 +128,16 @@ public class IDUtils {
 
     /**
      * 获取设备AndroidID
+     *
      * @param context 上下文
      * @return AndroidID
      */
     @SuppressLint("HardwareIds")
     public static String getAndroidID(Context context) {
-        String aid =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        if(TextUtils.isEmpty(aid)){
+        String aid = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (TextUtils.isEmpty(aid)) {
             return "";
-        }else{
+        } else {
             return aid.toUpperCase();
         }
     }
