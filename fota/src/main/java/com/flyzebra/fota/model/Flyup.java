@@ -277,7 +277,7 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     public void upPhoneLog(int event, String emsg) {
-        if (mOtaPackage == null || mOtaPackage.data == null || event == CODE_00 || event == CODE_91) {
+        if (mOtaPackage == null || mOtaPackage.data == null ) {
             FlyLog.e("no phoneId for upPhoneLog!");
             return;
         }

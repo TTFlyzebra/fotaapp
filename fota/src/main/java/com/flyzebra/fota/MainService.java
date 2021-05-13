@@ -69,7 +69,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
         FlyLog.d("upVesionProgress: %d, %d, %s", code, progress, msg);
-        if (progress == 0 || progress == 100) {
+        if (progress == 0 || progress == 100 || code == CODE_00 || code == CODE_91) {
             Flyup.getInstance().upPhoneLog(code, msg);
         }
         switch (code) {
