@@ -1,5 +1,7 @@
 package com.flyzebra.flydown;
 
+import android.text.TextUtils;
+
 import com.flyzebra.flydown.request.IFileReQuest;
 import com.flyzebra.flydown.request.SimpleFileReQuest;
 
@@ -46,36 +48,50 @@ public class FlyDown {
         }
     }
 
-    public static void delDownFile(String fileName) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String saveName = FlyDown.mCacheDir + "/" + fileName + ".zip";
-                File f1 = new File(saveName);
-                if(f1.exists()){
-                    f1.delete();
-                }
-                String tempFile = FlyDown.mCacheDir + "/" + fileName + ".fly";
-                File f2 = new File(tempFile);
-                if(f2.exists()){
-                    f2.delete();
+    public static void delDownFile(String fileMd5sum) {
+        String saveName = FlyDown.mCacheDir + "/" + fileMd5sum + ".zip";
+        File f1 = new File(saveName);
+        if (f1.exists()) {
+            f1.delete();
+        }
+        String tempFile = FlyDown.mCacheDir + "/" + fileMd5sum + ".fly";
+        File f2 = new File(tempFile);
+        if (f2.exists()) {
+            f2.delete();
+        }
+    }
+
+    public static void delOtherFile(String fileMd5sum) {
+        File file = new File(mCacheDir);
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                String filaName = f.getName();
+                if (!TextUtils.isEmpty(filaName) && !filaName.startsWith(fileMd5sum)) {
+                    delete(f);
                 }
             }
-        }).start();
+        }
+    }
+
+    public static boolean isFileDownFinish(String fileMd5sum) {
+        File saveFile = new File(FlyDown.mCacheDir + "/" + fileMd5sum + ".zip");
+        File tempFile = new File(FlyDown.mCacheDir + "/" + fileMd5sum + ".fly");
+        return saveFile.exists() && !tempFile.exists();
     }
 
     public static void delAllDownFile() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File file = new File(mCacheDir);
-                File[] files = file.listFiles();
-                if (files != null) {
-                    for (File f : files) {
-                        delete(f);
-                    }
-                }
+        File file = new File(mCacheDir);
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                delete(f);
             }
-        }).start();
+        }
     }
+
+    public static String getFilePath(String md5sum) {
+        return FlyDown.mCacheDir + "/" + md5sum + ".zip";
+    }
+
 }

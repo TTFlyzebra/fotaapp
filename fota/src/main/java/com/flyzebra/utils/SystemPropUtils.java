@@ -3,17 +3,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * ClassName: SystemPropTools
+ * ClassName: SystemPropUtils
  * Description:
  * Author: FlyZebra
  * Email:flycnzebra@gmail.com
  * Date: 19-12-11 上午10:37
  */
-public class SystemPropTools {
+public class SystemPropUtils {
     private static Method propGet;
     private static Method propSet;
 
-    private SystemPropTools() {
+    private SystemPropUtils() {
     }
 
     static {

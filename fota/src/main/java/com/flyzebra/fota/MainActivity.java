@@ -18,7 +18,7 @@ import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyCode;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.SystemPropTools;
+import com.flyzebra.utils.IDUtils;
 
 public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResult, IFlyCode {
     private static String[] PERMISSIONS_STORAGE = {
@@ -33,14 +33,12 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
 
     private StringBuffer verinfo = new StringBuffer();
 
-    private String version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        version = SystemPropTools.get("persist.vendor.display.id", "CM3003_V1.0.0_20210010000_USER");
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             for (String s : PERMISSIONS_STORAGE) {
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
 
         Flyup.getInstance().addListener(this);
 
-        tv_version.setText("当前版本：\n" + version + "\n");
+        tv_version.setText("当前版本：\n" + IDUtils.getVersion(this) + "\n");
         tv_upinfo.setText(Flyup.getInstance().getLastMessage());
         progressBar.setProgress(Flyup.getInstance().getLastProgress());
 
@@ -109,15 +107,11 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
 
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
-        if (progress == 0 || progress == 100) {
-            Flyup.getInstance().upPhoneLog(code, msg);
-        }
         tv_upinfo.setText(msg);
         progressBar.setProgress(progress);
         switch (code) {
             //已是最新版本
             case CODE_01:
-                bt_updater.setText("检查更新");
                 upVersionInfo();
                 break;
             //获取到最新版本
@@ -126,29 +120,27 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
                 break;
             //获取最新版本失败
             case CODE_03:
-                bt_updater.setText("检查更新");
                 upVersionInfo();
                 break;
             //获取最新版本失败，网络错误！
             case CODE_04:
-                bt_updater.setText("检查更新");
                 break;
-            //正在下载升级包......
+            //正在下载升级包...
             case CODE_05:
                 break;
             //下载升级包出错!
             case CODE_06:
                 break;
-            //正在校验升级包MD5值......
+            //正在校验升级包MD5值...
             case CODE_07:
                 break;
             //升级包MD5值校验错误!
             case CODE_08:
                 break;
-            //升级包数据校验......
+            //升级包数据校验...
             case CODE_09:
                 break;
-            //准备安装升级包......
+            //准备安装升级包...
             case CODE_10:
                 break;
             //升级包数据校验错误!
@@ -162,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements IFlyup.FlyupResul
                 break;
             //需要手动更新版本
             case CODE_92:
-                bt_updater.setText("升级系统");
                 break;
         }
     }

@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -82,11 +83,13 @@ public class NotificationView {
     public void show(int code, int progress, String msg) {
         remoteviews.setTextViewText(R.id.noti_msg, msg);
         remoteviews.setProgressBar(R.id.noti_pbar, 100, progress, false);
-        notimanager.notify(NOTIFICATION_ID, noti);
+//        notimanager.notify(NOTIFICATION_ID, noti);
+        ((Service)mContext).startForeground(NOTIFICATION_ID,noti);
     }
 
     public void hide() {
-        notimanager.cancel(NOTIFICATION_ID);
+//        notimanager.cancel(NOTIFICATION_ID);
+        ((Service)mContext).stopForeground(true);
     }
 
 }

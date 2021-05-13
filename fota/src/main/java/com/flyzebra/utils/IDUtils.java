@@ -10,19 +10,55 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 /**
  * 获取手机信息工具类
- *
  * @author HLQ
  * @createtime 2016-12-7下午2:06:03
  * @remarks
  */
 public class IDUtils {
+    /**
+     * 获取手机型号,兼容云手机
+     * @param context
+     * @return
+     */
+    public static String getModel(Context context) {
+        String model = SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
+        switch (model) {
+            case "C10":
+            case "C8":
+            case "CPE02":
+                return model;
+            default:
+                return "CM3003";
+        }
+    }
+
+    /**
+     * 获取版本号，兼容云手机
+     * @param context
+     * @return
+     */
+    public static String getVersion(Context context) {
+        String version = SystemPropUtils.get("persist.vendor.display.id", "");
+        if(TextUtils.isEmpty(version)){
+            version = SystemPropUtils.get("ro.build.display.id", "");
+        }
+        return version.toUpperCase();
+    }
+
+    public static String getSnUid(Context context) {
+        String snuid = SystemPropUtils.get("persist.radio.mcwill.pid", "").replace(".", "").trim();
+        if(TextUtils.isEmpty(snuid)){
+            snuid = SystemPropUtils.get("persist.sys.nv.sn", "");
+        }
+        return snuid.toUpperCase();
+    }
 
     /**
      * 获取手机IMEI
-     *
      * @param context
      * @return
      */
@@ -31,29 +67,31 @@ public class IDUtils {
         try {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             String imei = tm.getDeviceId();
-            if (imei == null) {
-                imei = "";
+            if (TextUtils.isEmpty(imei)) {
+                return  "";
+            }else{
+                return imei.toUpperCase();
             }
-            return imei;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
-
     }
 
     /**
      * 获取手机IMSI
+     * @param context
      */
     public static String getIMSI(Context context) {
         try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             //获取IMSI号
             String imsi = telephonyManager.getSubscriberId();
-            if (null == imsi) {
-                imsi = "";
+            if (TextUtils.isEmpty(imsi)) {
+                return  "";
+            }else{
+                return imsi.toUpperCase();
             }
-            return imsi;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -75,7 +113,12 @@ public class IDUtils {
      */
     @SuppressLint("HardwareIds")
     public static String getAndroidID(Context context) {
-        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String aid =  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if(TextUtils.isEmpty(aid)){
+            return "";
+        }else{
+            return aid.toUpperCase();
+        }
     }
 
 

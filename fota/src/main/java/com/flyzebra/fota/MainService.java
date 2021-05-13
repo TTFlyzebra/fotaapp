@@ -24,7 +24,9 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     private static final Handler tHandler = new Handler(mTaskThread.getLooper());
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private static final int CHECK_TIME = 60000 * 60 * 1;
+    private static final int CHECK_TIME = 60 * 60 * 1000;
+    private static final int MIN_TIME = 2 * 60 * 1000;
+    private static final int FIRST_TIME = 10 * 60 * 1000;
     private NotificationView notificationView;
 
     @Override
@@ -37,7 +39,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         super.onCreate();
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
-        tHandler.post(this);
+        tHandler.postDelayed(this, Math.max(MIN_TIME, (int) (Math.random() * FIRST_TIME)));
     }
 
     @Override
@@ -63,6 +65,9 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
         FlyLog.d("upVesionProgress: %d, %d, %s", code, progress, msg);
+        if (progress == 0 || progress == 100) {
+            Flyup.getInstance().upPhoneLog(code, msg);
+        }
         switch (code) {
             //已是最新版本
             case CODE_01:
@@ -80,7 +85,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_04:
                 tHandler.postDelayed(this, 20000);
                 break;
-            //正在下载升级包......
+            //正在下载升级包...
             case CODE_05:
                 notificationView.show(code, progress, msg);
                 break;
@@ -88,7 +93,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_06:
                 tHandler.postDelayed(this, 10000);
                 break;
-            //正在校验升级包MD5值......
+            //正在校验升级包MD5值...
             case CODE_07:
                 notificationView.show(code, progress, msg);
                 break;
@@ -96,11 +101,11 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_08:
                 tHandler.postDelayed(this, 10000);
                 break;
-            //升级包数据校验......
+            //升级包数据校验...
             case CODE_09:
                 notificationView.show(code, progress, msg);
                 break;
-            //安装升级包......
+            //安装升级包...
             case CODE_10:
                 notificationView.show(code, progress, msg);
                 break;
