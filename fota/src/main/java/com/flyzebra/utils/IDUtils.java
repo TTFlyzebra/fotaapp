@@ -92,7 +92,6 @@ public class IDUtils {
             FlyLog.e(e.toString());
             return "";
         }
-        FlyLog.d("getIMEI=" + imei);
         return imei.toUpperCase();
     }
 
