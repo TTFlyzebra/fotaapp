@@ -1,70 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="4dp"
-    android:background="#000"
-    android:orientation="vertical"
-    android:padding="10dp"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_version"
+    <FrameLayout
+        android:id="@+id/ac_fm01"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:textColor="#FFF" />
-
-    <ScrollView
-        android:id="@+id/sl01"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/ll01"
-        android:layout_below="@id/tv_version">
-
-        <TextView
-            android:id="@+id/tv_verinfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#FFF" />
-    </ScrollView>
-
-    <RelativeLayout
-        android:id="@+id/ll01"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_above="@+id/ll02"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="20dp">
-
-        <ProgressBar
-            android:id="@+id/ac_pbar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
-
-        <TextView
-            android:id="@+id/tv_upinfo"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:gravity="center"
-            android:textColor="#FFF" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/ll02"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/bt_updater"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="upgrade"
-            android:text="检查更新" />
-    </LinearLayout>
-</RelativeLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -10,7 +10,8 @@ import android.text.TextUtils;
 import com.flyzebra.flydown.FlyDown;
 import com.flyzebra.flydown.request.IFileReQuestListener;
 import com.flyzebra.fota.bean.OtaPackage;
-import com.flyzebra.fota.bean.PhoneLog;
+import com.flyzebra.fota.bean.RetPhoneLog;
+import com.flyzebra.fota.bean.RetVersion;
 import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FileUtils;
@@ -42,10 +43,10 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     private static final Handler tHandler = new Handler(mTaskThread.getLooper());
-    private static Handler mHandler = new Handler(Looper.getMainLooper());
+    private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Context mContext;
-    private AtomicBoolean isUpdaterRunning = new AtomicBoolean(false);
+    private AtomicBoolean isRunning = new AtomicBoolean(false);
 
     private ApiAction apiAction;
 
@@ -63,8 +64,8 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     @Override
-    public boolean isUpVeriosnRunning() {
-        return isUpdaterRunning.get();
+    public boolean isRunning() {
+        return isRunning.get();
     }
 
     @Override
@@ -98,59 +99,50 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     @Override
-    public void startUpVersion() {
+    public void checkNewVersion() {
         notifyListener(CODE_00, 0, "系统更新程序开始运行...");
-        if (isUpdaterRunning.get()) {
+        if (isRunning.get()) {
             notifyListener(CODE_91, 0, "系统更新正在运行！");
             return;
         }
-        isUpdaterRunning.set(true);
+        isRunning.set(true);
         if (apiAction == null) {
             apiAction = new ApiActionlmpl();
         }
         apiAction.getUpVersion(IDUtils.getModel(mContext), IDUtils.getVersion(mContext), IDUtils.getIMEI(mContext),
-                IDUtils.getSnUid(mContext), IDUtils.getAndroidID(mContext), new Observer<OtaPackage>() {
+                IDUtils.getSnUid(mContext), IDUtils.getAndroidID(mContext), new Observer<RetVersion>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(@NonNull OtaPackage otaPackage) {
-                        FlyLog.d("getUpVersion OK [%s]", otaPackage.data.version);
-                        mOtaPackage = otaPackage;
-                        tHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (otaPackage.code == 0) {
-                                    FlyDown.delOtherFile(otaPackage.data.md5sum);
-                                    notifyListener(CODE_02, 0, "新版本" + otaPackage.data.version + "...");
-                                    if (otaPackage.data.upType == 1) {
-                                        if (FlyDown.isFileDownFinish(otaPackage.data.md5sum)) {
-                                            verityOtaFile(otaPackage);
-                                        } else {
-                                            downloadOtaFile(otaPackage);
-                                        }
-                                    } else {
-                                        isUpdaterRunning.set(false);
-                                        notifyListener(CODE_92, 0, "需要手动更新版本！");
-                                    }
-                                } else if (otaPackage.code == 1) {
-                                    isUpdaterRunning.set(false);
-                                    FlyDown.delAllDownFile();
-                                    notifyListener(CODE_01, 100, "已更新到最新版本！");
-                                } else {
-                                    isUpdaterRunning.set(false);
-                                    notifyListener(CODE_03, 100, "获取最新版本失败！");
-                                }
+                    public void onNext(@NonNull RetVersion resultVersion) {
+                        mOtaPackage = resultVersion.data;
+                        FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
+                        if (resultVersion.code == 0) {
+                            FlyDown.delOtherFile(mOtaPackage.md5sum);
+                            notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "...");
+                            isRunning.set(false);
+                            if (mOtaPackage.upType == 1) {
+                                updaterOtaPackage(mOtaPackage);
+                            } else {
+                                notifyListener(CODE_92, 0, "需要手动更新版本！");
                             }
-                        });
+                        } else if (resultVersion.code == 1) {
+                            isRunning.set(false);
+                            FlyDown.delAllDownFile();
+                            notifyListener(CODE_01, 100, "已更新到最新版本！");
+                        } else {
+                            isRunning.set(false);
+                            notifyListener(CODE_03, 100, "获取最新版本失败！");
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         FlyLog.e(e.toString());
                         notifyListener(CODE_04, 100, "获取最新版本失败，网络错误！");
-                        isUpdaterRunning.set(false);
+                        isRunning.set(false);
                     }
 
                     @Override
@@ -160,25 +152,24 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     @Override
-    public void startUpVersion(OtaPackage otaPackage) {
-        if (otaPackage == null || otaPackage.data == null
-                || TextUtils.isEmpty(otaPackage.data.downurl)
-                || TextUtils.isEmpty(otaPackage.data.version)
-                || TextUtils.isEmpty(otaPackage.data.md5sum)) {
-            startUpVersion();
-            return;
-        }
-        mOtaPackage = otaPackage;
-        if (isUpdaterRunning.get()) {
+    public void updaterOtaPackage(OtaPackage otaPackage) {
+        if (isRunning.get()) {
             notifyListener(CODE_91, 0, "系统更新正在运行！");
             return;
         }
-        isUpdaterRunning.set(true);
-        notifyListener(CODE_02, 0, "手动更新版本" + otaPackage.data.version + "...");
-        if (FlyDown.isFileDownFinish(otaPackage.data.md5sum)) {
-            verityOtaFile(otaPackage);
+        isRunning.set(true);
+        mOtaPackage = otaPackage;
+        if (mOtaPackage == null
+                || TextUtils.isEmpty(mOtaPackage.downurl)
+                || TextUtils.isEmpty(mOtaPackage.version)
+                || TextUtils.isEmpty(mOtaPackage.md5sum)) {
+            isRunning.set(false);
+            return;
+        }
+        if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
+            verityOtaFile(mOtaPackage);
         } else {
-            downloadOtaFile(otaPackage);
+            downloadOtaPackage(mOtaPackage);
         }
     }
 
@@ -202,12 +193,13 @@ public class Flyup implements IFlyup, IFlyCode {
         });
     }
 
-    public void downloadOtaFile(final OtaPackage otaPackage) {
+    @Override
+    public void downloadOtaPackage(final OtaPackage otaPackage) {
         notifyListener(CODE_05, 0, "开始下载升级包...");
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
             public void error(String url, int ErrorCode) {
-                isUpdaterRunning.set(false);
+                isRunning.set(false);
                 notifyListener(CODE_06, 100, "下载升级包出错！");
             }
 
@@ -222,19 +214,20 @@ public class Flyup implements IFlyup, IFlyCode {
                 notifyListener(CODE_05, Math.max(progress, 1), "正在下载升级包...");
             }
         };
-        FlyDown.load(otaPackage.data.downurl).setThread(1).setFileName(otaPackage.data.md5sum).listener(listener).start();
+        FlyDown.load(otaPackage.downurl).setThread(1).setFileName(otaPackage.md5sum).listener(listener).start();
     }
 
-    private void verityOtaFile(OtaPackage otaPackage) {
+    @Override
+    public void verityOtaFile(OtaPackage otaPackage) {
         notifyListener(CODE_07, 0, "开始校验升级包MD5值...");
         tHandler.post(new Runnable() {
             @Override
             public void run() {
-                String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.data.md5sum));
-                if (md5sum.equals(otaPackage.data.md5sum)) {
+                String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.md5sum));
+                if (md5sum.equals(otaPackage.md5sum)) {
                     notifyListener(CODE_07, 100, "升级包MD5值校验成功...");
                     try {
-                        final File file = new File(FlyDown.getFilePath(otaPackage.data.md5sum));
+                        final File file = new File(FlyDown.getFilePath(otaPackage.md5sum));
                         notifyListener(CODE_09, 0, "开始升级包数据校验...");
                         RecoverySystem.verifyPackage(file, new RecoverySystem.ProgressListener() {
                             @Override
@@ -263,8 +256,8 @@ public class Flyup implements IFlyup, IFlyCode {
                     }
                 } else {
                     FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
-                    isUpdaterRunning.set(false);
-                    FlyDown.delDownFile(otaPackage.data.md5sum);
+                    isRunning.set(false);
+                    FlyDown.delDownFile(otaPackage.md5sum);
                     notifyListener(CODE_08, 100, "升级包MD5值校验错误！");
                 }
             }
@@ -272,18 +265,18 @@ public class Flyup implements IFlyup, IFlyCode {
     }
 
     public void upPhoneLog(int event, String emsg) {
-        if (mOtaPackage == null || mOtaPackage.data == null) {
+        if (mOtaPackage == null) {
             FlyLog.e("no phoneId for upPhoneLog!");
             return;
         }
 
-        apiAction.upPhoneLog(mOtaPackage.data.phoneId, event, emsg, new Observer<PhoneLog>() {
+        apiAction.upPhoneLog(mOtaPackage.phoneId, event, emsg, new Observer<RetPhoneLog>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
 
             @Override
-            public void onNext(PhoneLog phoneLog) {
+            public void onNext(RetPhoneLog phoneLog) {
                 FlyLog.d("onNext [%s]", phoneLog.toString());
             }
 

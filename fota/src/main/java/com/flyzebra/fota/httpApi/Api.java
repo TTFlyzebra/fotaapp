@@ -1,8 +1,8 @@
 package com.flyzebra.fota.httpApi;
 
 
-import com.flyzebra.fota.bean.OtaPackage;
-import com.flyzebra.fota.bean.PhoneLog;
+import com.flyzebra.fota.bean.RetPhoneLog;
+import com.flyzebra.fota.bean.RetVersion;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
@@ -13,9 +13,14 @@ public interface Api {
 
     @POST("fotaapi/version")
     @FormUrlEncoded
-    Observable<OtaPackage> getUpVersion(@Field("sid") String sid, @Field("ver") String ver, @Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
+    Observable<RetVersion> getUpVersion(@Field("sid") String sid, @Field("ver") String ver, @Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
+
+    @POST("fotaapi/version/allver")
+    @FormUrlEncoded
+    Observable<RetVersion> getAllVersion(@Field("ver") String ver);
 
     @POST("fotaapi/phonelog")
     @FormUrlEncoded
-    Observable<PhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg);
+    Observable<RetPhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg);
+
 }

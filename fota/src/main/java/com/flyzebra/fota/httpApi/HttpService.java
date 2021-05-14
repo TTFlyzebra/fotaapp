@@ -1,6 +1,8 @@
 package com.flyzebra.fota.httpApi;
 
+import com.flyzebra.fota.config.Config;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.SystemPropUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,13 +11,14 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class HttpService {
-    public static String API_BASE_URL = "http://103.206.203.140:801/flyota/";
     private static final int DEFAULT_TIMEOUT = 10;
     private Api mNetService;
     private static boolean isWork = false;
 
     public HttpService() {
+        String serverUrl = SystemPropUtils.get(Config.PROP_API_BASE_URL, Config.API_BASE_URL);
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         try {
@@ -23,7 +26,7 @@ public class HttpService {
                     .client(httpClientBuilder.build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .baseUrl(API_BASE_URL)
+                    .baseUrl(serverUrl)
                     .build();
             mNetService = retrofit.create(Api.class);
             isWork = true;

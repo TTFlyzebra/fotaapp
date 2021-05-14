@@ -43,13 +43,17 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         FlyLog.e("+++video decoder sevice is start!+++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
-//        tHandler.postDelayed(this, Math.max(MIN_TIME, (int) (Math.random() * FIRST_TIME)));
-        tHandler.post(this);
+        startCheckUpVersion(0);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void startCheckUpVersion(long time) {
+        tHandler.removeCallbacksAndMessages(this);
+        tHandler.postDelayed(this, time);
     }
 
     @Override
@@ -64,19 +68,16 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void run() {
         FlyLog.d("fota service running.....");
-        Flyup.getInstance().startUpVersion();
+        Flyup.getInstance().checkNewVersion();
     }
 
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
         FlyLog.d("upVesionProgress: %d, %d, %s", code, progress, msg);
-        if (progress == 0 || progress == 100 || code == CODE_00 || code == CODE_91) {
-            Flyup.getInstance().upPhoneLog(code, msg);
-        }
         switch (code) {
             //已是最新版本
             case CODE_01:
-                tHandler.postDelayed(this, CHECK_TIME);
+                startCheckUpVersion(CHECK_TIME);
                 break;
             //获取到最新版本
             case CODE_02:
@@ -84,11 +85,11 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //获取最新版本失败
             case CODE_03:
-                tHandler.postDelayed(this, CHECK_TIME);
+                startCheckUpVersion(CHECK_TIME);
                 break;
             //获取最新版本失败，网络错误！
             case CODE_04:
-                tHandler.postDelayed(this, 20000);
+                startCheckUpVersion(MIN_TIME);
                 break;
             //正在下载升级包...
             case CODE_05:
@@ -96,7 +97,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //下载升级包出错!
             case CODE_06:
-                tHandler.postDelayed(this, 10000);
+                startCheckUpVersion(10000);
                 break;
             //正在校验升级包MD5值...
             case CODE_07:
@@ -104,7 +105,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //升级包MD5值校验错误!
             case CODE_08:
-                tHandler.postDelayed(this, 10000);
+                startCheckUpVersion(10000);
                 break;
             //升级包数据校验...
             case CODE_09:
@@ -126,6 +127,9 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             //需要手动更新版本
             case CODE_92:
                 break;
+        }
+        if (progress == 0 || progress == 100 || code == CODE_00 || code == CODE_91) {
+            Flyup.getInstance().upPhoneLog(code, msg);
         }
     }
 }

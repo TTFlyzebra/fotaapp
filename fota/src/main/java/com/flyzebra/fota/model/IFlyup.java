@@ -21,13 +21,27 @@ public interface IFlyup {
      * 启动更线线程
      *
      */
-    void startUpVersion();
+    void checkNewVersion();
 
     /**
      * 启动更线线程
      *
      */
-    void startUpVersion(OtaPackage otaPackage);
+    void updaterOtaPackage(OtaPackage otaPackage);
+
+
+    /**
+     * 下载OTA包
+     * @param otaPackage
+     */
+    void downloadOtaPackage(OtaPackage otaPackage);
+
+
+    /**
+     * 校验OTA包
+     * @param otaPackage
+     */
+    void verityOtaFile(OtaPackage otaPackage);
 
     /**
      * 取消所有网络请求线程
@@ -39,7 +53,7 @@ public interface IFlyup {
      * @return true:正在更新
      * false:不是处于更新状态
      */
-    boolean isUpVeriosnRunning();
+    boolean isRunning();
 
 
     /**
