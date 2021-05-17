@@ -21,10 +21,10 @@ public interface IFlyup {
      * 启动更线线程
      *
      */
-    void checkNewVersion();
+    void updateNewVersion();
 
     /**
-     * 启动更线线程
+     * 更新指定版本
      *
      */
     void updaterOtaPackage(OtaPackage otaPackage);

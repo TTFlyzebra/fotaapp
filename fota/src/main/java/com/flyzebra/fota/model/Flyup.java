@@ -102,7 +102,7 @@ public class Flyup implements IFlyup, OsEvent {
     }
 
     @Override
-    public void checkNewVersion() {
+    public void updateNewVersion() {
         if (isRunning.get()) {
             return;
         }
@@ -123,7 +123,7 @@ public class Flyup implements IFlyup, OsEvent {
                             if (resultVersion.code == 0 || resultVersion.code == 1) {
                                 SPUtils.set(mContext, "PHONE_ID", mOtaPackage.phoneId);
                                 apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1), CODE_00,
-                                        "系统首次启动!", (int) (SystemClock.elapsedRealtime()/1000),new Observer<RetPhoneLog>() {
+                                        "系统首次启动!", (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
                                             @Override
                                             public void onSubscribe(Disposable d) {
                                             }
@@ -179,20 +179,15 @@ public class Flyup implements IFlyup, OsEvent {
 
     @Override
     public void updaterOtaPackage(OtaPackage otaPackage) {
-        if (isRunning.get()) {
-            return;
-        }
-        isRunning.set(true);
+        if (isRunning.get()) return;
         mOtaPackage = otaPackage;
         if (mOtaPackage == null
                 || TextUtils.isEmpty(mOtaPackage.downurl)
                 || TextUtils.isEmpty(mOtaPackage.version)
                 || TextUtils.isEmpty(mOtaPackage.md5sum)) {
-            isRunning.set(false);
-            mHandler.removeCallbacksAndMessages(null);
-            tHandler.removeCallbacksAndMessages(null);
-            checkNewVersion();
-        }else {
+            updateNewVersion();
+        } else {
+            isRunning.set(true);
             if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
                 verityOtaFile(mOtaPackage);
             } else {
@@ -299,25 +294,25 @@ public class Flyup implements IFlyup, OsEvent {
         }
 
         apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1),
-                event, emsg, (int) (SystemClock.elapsedRealtime()/1000),new Observer<RetPhoneLog>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
+                event, emsg, (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
 
-            @Override
-            public void onNext(RetPhoneLog phoneLog) {
+                    @Override
+                    public void onNext(RetPhoneLog phoneLog) {
 //                FlyLog.d("onNext [%s]", phoneLog.toString());
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                FlyLog.e("upPhoneLog onError!" + e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        FlyLog.e("upPhoneLog onError!" + e);
+                    }
 
-            @Override
-            public void onComplete() {
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     private static class FlyUpdateHolder {

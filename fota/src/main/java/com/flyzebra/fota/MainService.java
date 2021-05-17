@@ -58,17 +58,17 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onDestroy() {
-        Flyup.getInstance().stopUpVersion();
-        Flyup.getInstance().removeListener(this);
         tHandler.removeCallbacksAndMessages(null);
         mHandler.removeCallbacksAndMessages(null);
+        Flyup.getInstance().stopUpVersion();
+        Flyup.getInstance().removeListener(this);
         super.onDestroy();
     }
 
     @Override
     public void run() {
         FlyLog.d("fota service running.....");
-        Flyup.getInstance().checkNewVersion();
+        Flyup.getInstance().updateNewVersion();
     }
 
     @Override
