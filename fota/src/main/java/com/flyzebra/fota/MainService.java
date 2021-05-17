@@ -38,7 +38,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     public void onCreate() {
         super.onCreate();
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
-        FlyLog.e("++++++OcFota 1.02---2021.05.13++++++");
+        FlyLog.e("++++++OcFota 1.03---2021.05.17++++++");
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
         FlyLog.e("+++video decoder sevice is start!+++");
         Flyup.getInstance().addListener(this);
