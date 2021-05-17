@@ -22,6 +22,6 @@ public interface Api {
 
     @POST("fotaapi/phonelog")
     @FormUrlEncoded
-    Observable<RetPhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg);
+    Observable<RetPhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg,  @Field("phonetime") int phonetime);
 
 }

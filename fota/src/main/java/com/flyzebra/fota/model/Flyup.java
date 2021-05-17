@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.RecoverySystem;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.flyzebra.flydown.FlyDown;
@@ -18,6 +19,7 @@ import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FileUtils;
 import com.flyzebra.utils.FlyLog;
 import com.flyzebra.utils.IDUtils;
+import com.flyzebra.utils.SPUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +58,7 @@ public class Flyup implements IFlyup, OsEvent {
     private int lastCode = 0;
     private int lastProgress = 0;
     private String lastMessage = "";
-
+    private AtomicBoolean isFirst = new AtomicBoolean(true);
 
     @Override
     public void init(Context context) {
@@ -101,9 +103,7 @@ public class Flyup implements IFlyup, OsEvent {
 
     @Override
     public void checkNewVersion() {
-        notifyListener(CODE_00, 0, "系统更新程序开始运行...");
         if (isRunning.get()) {
-            notifyListener(CODE_91, 0, "系统更新正在运行！");
             return;
         }
         isRunning.set(true);
@@ -119,6 +119,31 @@ public class Flyup implements IFlyup, OsEvent {
                     @Override
                     public void onNext(@NonNull RetVersion resultVersion) {
                         mOtaPackage = resultVersion.data;
+                        if (isFirst.get()) {
+                            if (resultVersion.code == 0 || resultVersion.code == 1) {
+                                SPUtils.set(mContext, "PHONE_ID", mOtaPackage.phoneId);
+                                apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1), CODE_00,
+                                        "系统首次启动!", (int) (SystemClock.elapsedRealtime()/1000),new Observer<RetPhoneLog>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onNext(RetPhoneLog phoneLog) {
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                FlyLog.e("upPhoneLog onError!" + e);
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+                                                isFirst.set(false);
+                                            }
+                                        });
+                            }
+                        }
                         FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
                         if (resultVersion.code == 0) {
                             FlyDown.delOtherFile(mOtaPackage.md5sum);
@@ -155,7 +180,6 @@ public class Flyup implements IFlyup, OsEvent {
     @Override
     public void updaterOtaPackage(OtaPackage otaPackage) {
         if (isRunning.get()) {
-            notifyListener(CODE_91, 0, "系统更新正在运行！");
             return;
         }
         isRunning.set(true);
@@ -271,14 +295,15 @@ public class Flyup implements IFlyup, OsEvent {
             return;
         }
 
-        apiAction.upPhoneLog(mOtaPackage.phoneId, event, emsg, new Observer<RetPhoneLog>() {
+        apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1),
+                event, emsg, (int) (SystemClock.elapsedRealtime()/1000),new Observer<RetPhoneLog>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
 
             @Override
             public void onNext(RetPhoneLog phoneLog) {
-                FlyLog.d("onNext [%s]", phoneLog.toString());
+//                FlyLog.d("onNext [%s]", phoneLog.toString());
             }
 
             @Override

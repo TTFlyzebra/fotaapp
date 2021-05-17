@@ -14,6 +14,6 @@ public interface ApiAction {
 
     void getAllVersion(String sid, String ver, String imei, String uid,  String aid, Observer<RetAllVersion> observer);
 
-    void upPhoneLog(int phoneId, int event, String emsg, Observer<RetPhoneLog> observer);
+    void upPhoneLog(int phoneId, int event, String emsg, int phonetime, Observer<RetPhoneLog> observer);
 
 }

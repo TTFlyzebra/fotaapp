@@ -128,7 +128,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_92:
                 break;
         }
-        if (progress == 0 || progress == 100 || (code != CODE_00 && code!= CODE_91)) {
+        if ((progress == 0 || progress == 100) && code != CODE_00 && code != CODE_91) {
             Flyup.getInstance().upPhoneLog(code, msg);
         }
     }

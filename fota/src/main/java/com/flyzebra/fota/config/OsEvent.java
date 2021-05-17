@@ -2,7 +2,7 @@ package com.flyzebra.fota.config;
 
 public interface OsEvent {
 
-    //系统更新程序开始运行...
+    //系统首次启动...
     int CODE_00 = 0;
 
     //已是最新版本
