@@ -189,12 +189,15 @@ public class Flyup implements IFlyup, OsEvent {
                 || TextUtils.isEmpty(mOtaPackage.version)
                 || TextUtils.isEmpty(mOtaPackage.md5sum)) {
             isRunning.set(false);
-            return;
-        }
-        if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
-            verityOtaFile(mOtaPackage);
-        } else {
-            downloadOtaPackage(mOtaPackage);
+            mHandler.removeCallbacksAndMessages(null);
+            tHandler.removeCallbacksAndMessages(null);
+            checkNewVersion();
+        }else {
+            if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
+                verityOtaFile(mOtaPackage);
+            } else {
+                downloadOtaPackage(mOtaPackage);
+            }
         }
     }
 

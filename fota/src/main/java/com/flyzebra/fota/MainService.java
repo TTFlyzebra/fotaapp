@@ -25,7 +25,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private static final int CHECK_TIME = 60 * 60 * 1000;
-    private static final int MIN_TIME = 2 * 60 * 1000;
+    private static final int MIN_TIME = 1 * 60 * 1000;
     private static final int FIRST_TIME = 10 * 60 * 1000;
     private NotificationView notificationView;
 
@@ -97,7 +97,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //下载升级包出错!
             case CODE_06:
-                startCheckUpVersion(10000);
+                startCheckUpVersion(MIN_TIME);
                 break;
             //正在校验升级包MD5值...
             case CODE_07:
@@ -105,7 +105,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //升级包MD5值校验错误!
             case CODE_08:
-                startCheckUpVersion(10000);
+                startCheckUpVersion(MIN_TIME);
                 break;
             //升级包数据校验...
             case CODE_09:
@@ -126,6 +126,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //需要手动更新版本
             case CODE_92:
+                startCheckUpVersion(CHECK_TIME);
                 break;
         }
         if ((progress == 0 || progress == 100) && code != CODE_00 && code != CODE_91) {
