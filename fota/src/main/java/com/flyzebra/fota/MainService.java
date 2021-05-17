@@ -58,10 +58,10 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onDestroy() {
-        tHandler.removeCallbacksAndMessages(null);
-        mHandler.removeCallbacksAndMessages(null);
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
+        tHandler.removeCallbacksAndMessages(null);
+        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
