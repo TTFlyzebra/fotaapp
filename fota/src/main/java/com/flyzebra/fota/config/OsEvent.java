@@ -1,6 +1,6 @@
-package com.flyzebra.fota.model;
+package com.flyzebra.fota.config;
 
-public interface IFlyCode {
+public interface OsEvent {
 
     //系统更新程序开始运行...
     int CODE_00 = 0;

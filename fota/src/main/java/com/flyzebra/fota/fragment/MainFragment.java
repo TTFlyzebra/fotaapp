@@ -1,4 +1,4 @@
-package com.flyzebra.fota;
+package com.flyzebra.fota.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,13 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.flyzebra.fota.R;
 import com.flyzebra.fota.bean.OtaPackage;
+import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.model.Flyup;
-import com.flyzebra.fota.model.IFlyCode;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtils;
 
-public class MainFragment extends Fragment implements View.OnClickListener,IFlyup.FlyupResult, IFlyCode {
+public class MainFragment extends Fragment implements View.OnClickListener,IFlyup.FlyupResult, OsEvent {
 
 
     private TextView tv_version, tv_verinfo, tv_upinfo;

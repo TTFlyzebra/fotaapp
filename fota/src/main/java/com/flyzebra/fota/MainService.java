@@ -7,14 +7,14 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 
+import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.model.Flyup;
-import com.flyzebra.fota.model.IFlyCode;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
 
 
-public class MainService extends Service implements Runnable, IFlyup.FlyupResult, IFlyCode {
+public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
     private static final HandlerThread mTaskThread = new HandlerThread("fota_service");
 
     static {
@@ -128,7 +128,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_92:
                 break;
         }
-        if (progress == 0 || progress == 100 || code == CODE_00 || code == CODE_91) {
+        if (progress == 0 || progress == 100 || (code != CODE_00 && code!= CODE_91)) {
             Flyup.getInstance().upPhoneLog(code, msg);
         }
     }

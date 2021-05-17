@@ -16,6 +16,8 @@ import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.flyzebra.fota.fragment.AllotaFragment;
+import com.flyzebra.fota.fragment.MainFragment;
 import com.flyzebra.utils.FlyLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (passWordCount >= passWords.length) {
                 passWordCount = 0;
-                rePlaceFragMent(new HideFragment());
+                rePlaceFragMent(new AllotaFragment());
             }
         }
         return super.onTouchEvent(ev);
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mFragment instanceof HideFragment){
+        if(mFragment instanceof AllotaFragment){
             rePlaceFragMent(new MainFragment());
             return;
         }

@@ -1,5 +1,6 @@
 package com.flyzebra.fota.httpApi;
 
+import com.flyzebra.fota.bean.RetAllVersion;
 import com.flyzebra.fota.bean.RetPhoneLog;
 import com.flyzebra.fota.bean.RetVersion;
 
@@ -19,6 +20,15 @@ public class ApiActionlmpl implements ApiAction {
     @Override
     public void getUpVersion(String sid, String ver, String imei, String uid, String aid, Observer<RetVersion> observer) {
         mNetService.getUpVersion(sid, ver, imei, uid, aid)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getAllVersion(String sid, String ver, String imei, String uid, String aid, Observer<RetAllVersion> observer) {
+        mNetService.getAllVersion(sid, ver, imei, uid, aid)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

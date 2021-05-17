@@ -1,6 +1,7 @@
 package com.flyzebra.fota.httpApi;
 
 
+import com.flyzebra.fota.bean.RetAllVersion;
 import com.flyzebra.fota.bean.RetPhoneLog;
 import com.flyzebra.fota.bean.RetVersion;
 
@@ -15,9 +16,9 @@ public interface Api {
     @FormUrlEncoded
     Observable<RetVersion> getUpVersion(@Field("sid") String sid, @Field("ver") String ver, @Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
 
-    @POST("fotaapi/version/allver")
+    @POST("fotaapi/version/all")
     @FormUrlEncoded
-    Observable<RetVersion> getAllVersion(@Field("ver") String ver);
+    Observable<RetAllVersion> getAllVersion(@Field("sid") String sid, @Field("ver") String ver,@Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
 
     @POST("fotaapi/phonelog")
     @FormUrlEncoded
