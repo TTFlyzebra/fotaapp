@@ -3,7 +3,6 @@ package com.flyzebra.fota;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 
@@ -15,15 +14,7 @@ import com.flyzebra.utils.FlyLog;
 
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
-    private static final HandlerThread mTaskThread = new HandlerThread("fota_service");
-
-    static {
-        mTaskThread.start();
-    }
-
-    private static final Handler tHandler = new Handler(mTaskThread.getLooper());
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
-
     private static final int CHECK_TIME = 60 * 60 * 1000;
     private static final int MIN_TIME = 1 * 60 * 1000;
     private static final int FIRST_TIME = 10 * 60 * 1000;
@@ -52,13 +43,12 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     }
 
     private void startCheckUpVersion(long time) {
-        tHandler.removeCallbacksAndMessages(this);
-        tHandler.postDelayed(this, time);
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.postDelayed(this, time);
     }
 
     @Override
     public void onDestroy() {
-        tHandler.removeCallbacksAndMessages(null);
         mHandler.removeCallbacksAndMessages(null);
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
