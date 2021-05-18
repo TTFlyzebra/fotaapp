@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,7 +54,7 @@ public class NotificationView {
         remoteviews.setOnClickPendingIntent(R.id.noti_icon, nextPI);
         remoteviews.setTextViewText(R.id.noti_msg, "");
         remoteviews.setProgressBar(R.id.noti_pbar, 100, 0, false);
-        remoteviews.setImageViewResource(R.id.noti_icon, R.drawable.ic_launcher_background);
+        remoteviews.setImageViewResource(R.id.noti_icon, R.drawable.updater);
         Intent notiintent = new Intent(context, MainActivity.class);
         notiintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent PdIntent = PendingIntent.getActivity(context, 0, notiintent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -83,13 +82,13 @@ public class NotificationView {
     public void show(int code, int progress, String msg) {
         remoteviews.setTextViewText(R.id.noti_msg, msg);
         remoteviews.setProgressBar(R.id.noti_pbar, 100, progress, false);
-//        notimanager.notify(NOTIFICATION_ID, noti);
-        ((Service)mContext).startForeground(NOTIFICATION_ID,noti);
+        notimanager.notify(NOTIFICATION_ID, noti);
+//        ((Service)mContext).startForeground(NOTIFICATION_ID,noti);
     }
 
     public void hide() {
-//        notimanager.cancel(NOTIFICATION_ID);
-        ((Service)mContext).stopForeground(true);
+        notimanager.cancel(NOTIFICATION_ID);
+//        ((Service)mContext).stopForeground(true);
     }
 
 }
