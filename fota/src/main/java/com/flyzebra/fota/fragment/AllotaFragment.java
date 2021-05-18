@@ -89,6 +89,6 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.CallbackOn
     public void click(View v) {
         int pos = (int) v.getTag();
         Flyup.getInstance().updaterOtaPackage(vOtaList.get(pos));
-        ((MainActivity)getActivity()).rePlaceFragMent(new MainFragment());
+        ((MainActivity)getActivity()).replaceFragMent(new MainFragment());
     }
 }

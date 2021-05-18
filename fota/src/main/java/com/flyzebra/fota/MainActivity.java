@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.flyzebra.fota.fragment.AllotaFragment;
 import com.flyzebra.fota.fragment.MainFragment;
+import com.flyzebra.fota.fragment.SettingsFragment;
 import com.flyzebra.utils.FlyLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
         mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startService(mainintent);
 
-        rePlaceFragMent(new MainFragment());
+        replaceFragMent(new MainFragment());
     }
 
-    public void rePlaceFragMent(Fragment fragment) {
+    public void replaceFragMent(Fragment fragment) {
         mFragment = fragment;
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (passWordCount >= passWords.length) {
                 passWordCount = 0;
-                rePlaceFragMent(new AllotaFragment());
+                replaceFragMent(new AllotaFragment());
             }
         }
         return super.onTouchEvent(ev);
@@ -100,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mFragment instanceof AllotaFragment){
-            rePlaceFragMent(new MainFragment());
+        if (mFragment instanceof AllotaFragment || mFragment instanceof SettingsFragment) {
+            replaceFragMent(new MainFragment());
             return;
         }
         super.onBackPressed();
@@ -116,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_main:
+                if (!(mFragment instanceof MainFragment))
+                    replaceFragMent(new MainFragment());
+                break;
+            case R.id.action_settings:
+                if (!(mFragment instanceof SettingsFragment))
+                    replaceFragMent(new SettingsFragment());
+                break;
             case R.id.action_exit:
                 onBackPressed();
                 break;

@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">升级</string>
-    <string name="updater_system">升级系统</string>
-    <string name="more_versions">更多版本</string>
-    <string name="exit">退出</string>
-    <string name="all_upota">所以可升级版本</string>
-</resources>
