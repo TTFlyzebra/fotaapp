@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mFragment instanceof AllotaFragment || mFragment instanceof SettingsFragment) {
+        if (!(mFragment instanceof MainFragment)) {
             replaceFragMent(new MainFragment());
             return;
         }

@@ -189,9 +189,9 @@ public class Flyup implements IFlyup, OsEvent {
         } else {
             isRunning.set(true);
             if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
-                verityOtaFile(mOtaPackage);
+                verityFileMd5(mOtaPackage);
             } else {
-                downloadOtaPackage(mOtaPackage);
+                downloadFile(mOtaPackage);
             }
         }
     }
@@ -217,7 +217,7 @@ public class Flyup implements IFlyup, OsEvent {
     }
 
     @Override
-    public void downloadOtaPackage(final OtaPackage otaPackage) {
+    public void downloadFile(final OtaPackage otaPackage) {
         notifyListener(CODE_05, 0, "开始下载升级包...");
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
@@ -229,7 +229,7 @@ public class Flyup implements IFlyup, OsEvent {
             @Override
             public void finish(String saveName) {
                 notifyListener(CODE_05, 100, "升级包下载完成...");
-                verityOtaFile(otaPackage);
+                verityFileMd5(otaPackage);
             }
 
             @Override
@@ -241,7 +241,7 @@ public class Flyup implements IFlyup, OsEvent {
     }
 
     @Override
-    public void verityOtaFile(OtaPackage otaPackage) {
+    public void verityFileMd5(OtaPackage otaPackage) {
         notifyListener(CODE_07, 0, "开始校验升级包MD5值...");
         tHandler.post(new Runnable() {
             @Override
@@ -249,43 +249,55 @@ public class Flyup implements IFlyup, OsEvent {
                 String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.md5sum));
                 if (md5sum.equals(otaPackage.md5sum)) {
                     notifyListener(CODE_07, 100, "升级包MD5值校验成功...");
-                    try {
-                        final File file = new File(FlyDown.getFilePath(otaPackage.md5sum));
-                        notifyListener(CODE_09, 0, "开始升级包数据校验...");
-                        RecoverySystem.verifyPackage(file, new RecoverySystem.ProgressListener() {
-                            @Override
-                            public void onProgress(int i) {
-                                if (i >= 100) {
-                                    notifyListener(CODE_09, 100, "升级包数据校验完成...");
-                                    tHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                notifyListener(CODE_10, 100, "开始安装升级包...");
-                                                RecoverySystem.installPackage(mContext, file);
-                                                isRunning.set(false);
-                                            } catch (IOException e) {
-                                                notifyListener(CODE_12, 100, "安装升级包错误！");
-                                                FlyLog.e(e.toString());
-                                                isRunning.set(false);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }, null);
-                        FlyLog.e("update ota file =%s", file.getAbsolutePath());
-                    } catch (GeneralSecurityException | IOException e) {
-                        notifyListener(CODE_11, 100, "升级包数据校验错误！");
-                        FlyLog.e(e.toString());
-                        isRunning.set(false);
-                    }
+                    final File file = new File(FlyDown.getFilePath(otaPackage.md5sum));
+                    updaterFile(file);
                 } else {
                     FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
                     isRunning.set(false);
                     FlyDown.delDownFile(otaPackage.md5sum);
                     notifyListener(CODE_08, 100, "升级包MD5值校验错误！");
                 }
+            }
+        });
+    }
+
+    @Override
+    public void updaterFile(File file) {
+        tHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    isRunning.set(true);
+                    notifyListener(CODE_09, 0, "开始升级包数据校验...");
+                    RecoverySystem.verifyPackage(file, new RecoverySystem.ProgressListener() {
+                        @Override
+                        public void onProgress(int i) {
+                            if (i >= 100) {
+                                notifyListener(CODE_09, 100, "升级包数据校验完成...");
+                                tHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            notifyListener(CODE_10, 100, "开始安装升级包...");
+                                            RecoverySystem.installPackage(mContext, file);
+                                            isRunning.set(false);
+                                        } catch (Exception e) {
+                                            notifyListener(CODE_12, 100, "安装升级包错误！");
+                                            FlyLog.e(e.toString());
+                                            isRunning.set(false);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }, null);
+                } catch (GeneralSecurityException | IOException e) {
+                    FlyLog.e(e.toString());
+                    notifyListener(CODE_11, 100, "升级包数据校验错误！");
+                    FlyLog.e(e.toString());
+                    isRunning.set(false);
+                }
+                FlyLog.e("update ota file =%s", file.getAbsolutePath());
             }
         });
     }

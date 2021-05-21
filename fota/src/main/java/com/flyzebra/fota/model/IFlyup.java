@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.flyzebra.fota.bean.OtaPackage;
 
+import java.io.File;
+
 /**
  *
  * Created by FlyZebra on 2016/6/21.
@@ -34,14 +36,21 @@ public interface IFlyup {
      * 下载OTA包
      * @param otaPackage
      */
-    void downloadOtaPackage(OtaPackage otaPackage);
+    void downloadFile(OtaPackage otaPackage);
 
 
     /**
      * 校验OTA包
      * @param otaPackage
      */
-    void verityOtaFile(OtaPackage otaPackage);
+    void verityFileMd5(OtaPackage otaPackage);
+
+
+    /**
+     * 升级系统
+     * @param file
+     */
+    void updaterFile(File file);
 
     /**
      * 取消所有网络请求线程

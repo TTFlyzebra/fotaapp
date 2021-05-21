@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -18,7 +19,7 @@ import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtils;
 
-public class MainFragment extends Fragment implements View.OnClickListener,IFlyup.FlyupResult, OsEvent {
+public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, OsEvent {
 
 
     private TextView tv_version, tv_verinfo, tv_upinfo;
@@ -129,9 +130,13 @@ public class MainFragment extends Fragment implements View.OnClickListener,IFlyu
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.bt_updater:
-                Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
+                if (!Flyup.getInstance().isRunning()) {
+                    Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
+                } else {
+                    Toast.makeText(getActivity(), "错误！升级系统正在运行！", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

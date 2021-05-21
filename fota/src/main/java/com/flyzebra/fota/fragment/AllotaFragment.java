@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -88,7 +89,11 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
     @Override
     public void onItemclick(View v) {
         int pos = (int) v.getTag();
-        Flyup.getInstance().updaterOtaPackage(vOtaList.get(pos));
-        ((MainActivity)getActivity()).replaceFragMent(new MainFragment());
+        if(!Flyup.getInstance().isRunning()) {
+            Flyup.getInstance().updaterOtaPackage(vOtaList.get(pos));
+            ((MainActivity)getActivity()).replaceFragMent(new MainFragment());
+        }else{
+            Toast.makeText(getActivity(),"错误！升级系统正在运行！",Toast.LENGTH_LONG).show();
+        }
     }
 }

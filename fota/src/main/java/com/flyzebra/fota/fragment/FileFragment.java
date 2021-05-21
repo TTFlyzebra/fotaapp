@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.flyzebra.fota.MainActivity;
 import com.flyzebra.fota.R;
 import com.flyzebra.fota.bean.FileInfo;
-import com.flyzebra.utils.FlyLog;
+import com.flyzebra.fota.model.Flyup;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -31,9 +33,9 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
 
     private FileAdapter mAdapter;
     private final List<FileInfo> vFileList = new ArrayList<>();
-    private static final String FIRST_DIR = "/sdcard";
+    private static final String FIRST_DIR = "/data/cache";
+    private String lastDir = FIRST_DIR;
     private Stack<String> stackList = new Stack<>();
-    private String lastDir = "/sdcard";
 
 
     private static final HandlerThread mTaskThread = new HandlerThread("fota_filelist");
@@ -92,7 +94,12 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
             listFiles(fileInfo.fullName);
             lastDir = fileInfo.fullName;
         } else {
-            //TODO:updater
+            if (!Flyup.getInstance().isRunning()) {
+                Flyup.getInstance().updaterFile(new File(fileInfo.fullName));
+                ((MainActivity) getActivity()).replaceFragMent(new MainFragment());
+            }else{
+                Toast.makeText(getActivity(),"错误！升级系统正在运行！",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -113,31 +120,30 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
                     if (files != null) {
                         final List<FileInfo> tmpList = new ArrayList<>();
                         for (File f : files) {
-                            try {
-                                FileInfo fileInfo = new FileInfo();
-                                fileInfo.type = f.isDirectory() ? 0 : 1;
-                                fileInfo.fileName = f.getName();
-                                fileInfo.fullName = f.getAbsolutePath();
-                                long time = f.lastModified();
-                                String ctime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(new Date(time));
-                                if (f.isDirectory()) {
-                                    fileInfo.otherInfo = "Date:" + ctime;
+                            if (f == null) continue;
+                            if (f.isDirectory() && !f.getName().equals("recovery")) continue;
+                            if (!f.isDirectory() && !f.getName().toUpperCase().endsWith(".ZIP")) continue;
+                            FileInfo fileInfo = new FileInfo();
+                            fileInfo.type = f.isDirectory() ? 0 : 1;
+                            fileInfo.fileName = f.getName();
+                            fileInfo.fullName = f.getAbsolutePath();
+                            long time = f.lastModified();
+                            String ctime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(new Date(time));
+                            if (f.isDirectory()) {
+                                fileInfo.otherInfo = "Date:" + ctime;
+                            } else {
+                                long filesize = f.length();
+                                String strfilesize;
+                                if ((filesize >> 20) > 0) {
+                                    strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024 / 1024)) + "M";
+                                } else if ((filesize >> 10) > 0) {
+                                    strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024)) + "KB";
                                 } else {
-                                    long filesize = f.length();
-                                    String strfilesize;
-                                    if ((filesize >> 20) > 0) {
-                                        strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024 / 1024)) + "M";
-                                    } else if ((filesize >> 10) > 0) {
-                                        strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024)) + "KB";
-                                    } else {
-                                        strfilesize = filesize + "Byte";
-                                    }
-                                    fileInfo.otherInfo = "Date:" + ctime + "  Size:" + strfilesize;
+                                    strfilesize = filesize + "Byte";
                                 }
-                                tmpList.add(fileInfo);
-                            } catch (Exception e) {
-                                FlyLog.e(e.toString());
+                                fileInfo.otherInfo = "Date:" + ctime + "  Size:" + strfilesize;
                             }
+                            tmpList.add(fileInfo);
                         }
                         Collections.sort(tmpList, new Comparator<FileInfo>() {
                             @Override

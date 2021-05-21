@@ -16,7 +16,7 @@ import com.flyzebra.utils.FlyLog;
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final int CHECK_TIME = 60 * 60 * 1000;
-    private static final int MIN_TIME = 1 * 60 * 1000;
+    private static final int MIN_TIME = 5 * 60 * 1000;
     private static final int FIRST_TIME = 10 * 60 * 1000;
     private NotificationView notificationView;
 
