@@ -6,24 +6,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flyzebra.fota.R;
-import com.flyzebra.fota.bean.OtaPackage;
+import com.flyzebra.fota.bean.FileInfo;
+import com.flyzebra.utils.FlyLog;
 
 import java.util.List;
 
-public class AllotaAdapter extends BaseAdapter implements OnClickListener {
+public class FileAdapter extends BaseAdapter implements OnClickListener {
 
     private class ViewHolder {
+        public LinearLayout ll01 = null;
         public TextView tv01 = null;
         public TextView tv02 = null;
-        public TextView tv03 = null;
-        public ImageButton bt01 = null;
+        public ImageView iv01 = null;
     }
 
-    private List<OtaPackage> vOtaList;
+    private List<FileInfo> vFileList;
     private int idListview;
     private OnItemClick mOnItemClick = null;
     private Context mContext;
@@ -33,21 +35,21 @@ public class AllotaAdapter extends BaseAdapter implements OnClickListener {
         void onItemclick(View v);
     }
 
-    public AllotaAdapter(Context context, List<OtaPackage> list, int idListview, OnItemClick OnItemClick) {
+    public FileAdapter(Context context, List<FileInfo> list, int idListview, OnItemClick OnItemClick) {
         this.mOnItemClick = OnItemClick;
-        this.vOtaList = list;
+        this.vFileList = list;
         this.idListview = idListview;
         this.mContext = context;
     }
 
     @Override
     public int getCount() {
-        return vOtaList == null ? 0 : vOtaList.size();
+        return vFileList == null ? 0 : vFileList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return vOtaList.get(position);
+        return vFileList.get(position);
     }
 
     @Override
@@ -60,21 +62,31 @@ public class AllotaAdapter extends BaseAdapter implements OnClickListener {
         ViewHolder holder = new ViewHolder();
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(idListview, null);
+            holder.ll01 = convertView.findViewById(R.id.item_ll01);
             holder.tv01 = convertView.findViewById(R.id.item_tv01);
             holder.tv02 = convertView.findViewById(R.id.item_tv02);
-            holder.tv03 = convertView.findViewById(R.id.item_tv03);
-            holder.bt01 = convertView.findViewById(R.id.item_bt01);
+            holder.iv01 = convertView.findViewById(R.id.item_iv01);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        OtaPackage otaPackage = vOtaList.get(position);
-        holder.tv01.setText(otaPackage.version);
-        holder.tv02.setText(otaPackage.otaType == 0 ? "全量包" : "增量包");
-        holder.tv03.setText(otaPackage.filesize / 1024 / 1024 + "M");
-        holder.bt01.setTag(position);
-        holder.bt01.setOnClickListener(this);
+        try {
+            FileInfo fileInfo = vFileList.get(position);
+            holder.tv01.setText(fileInfo.fileName);
+            holder.tv02.setText(fileInfo.otherInfo);
+            if (fileInfo.type == 0) {
+                holder.iv01.setImageResource(R.drawable.icon_dirg1);
+            } else {
+                holder.iv01.setImageResource(R.drawable.icon_file1);
+            }
+            holder.iv01.setTag(fileInfo);
+            holder.iv01.setOnClickListener(this);
+            holder.ll01.setTag(fileInfo);
+            holder.ll01.setOnClickListener(this);
+        }catch (Exception e){
+            FlyLog.e(e.toString());
+        }
         return convertView;
     }
 

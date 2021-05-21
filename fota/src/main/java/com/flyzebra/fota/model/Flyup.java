@@ -263,9 +263,11 @@ public class Flyup implements IFlyup, OsEvent {
                                             try {
                                                 notifyListener(CODE_10, 100, "开始安装升级包...");
                                                 RecoverySystem.installPackage(mContext, file);
+                                                isRunning.set(false);
                                             } catch (IOException e) {
                                                 notifyListener(CODE_12, 100, "安装升级包错误！");
                                                 FlyLog.e(e.toString());
+                                                isRunning.set(false);
                                             }
                                         }
                                     });
@@ -276,6 +278,7 @@ public class Flyup implements IFlyup, OsEvent {
                     } catch (GeneralSecurityException | IOException e) {
                         notifyListener(CODE_11, 100, "升级包数据校验错误！");
                         FlyLog.e(e.toString());
+                        isRunning.set(false);
                     }
                 } else {
                     FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
@@ -289,7 +292,7 @@ public class Flyup implements IFlyup, OsEvent {
 
     public void upPhoneLog(int event, String emsg) {
         if (mOtaPackage == null) {
-            FlyLog.e("no phoneId for upPhoneLog!");
+//            FlyLog.e("no phoneId for upPhoneLog!");
             return;
         }
 

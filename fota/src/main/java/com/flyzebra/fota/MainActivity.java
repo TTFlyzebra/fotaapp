@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.flyzebra.fota.fragment.AllotaFragment;
+import com.flyzebra.fota.fragment.FileFragment;
 import com.flyzebra.fota.fragment.MainFragment;
 import com.flyzebra.fota.fragment.SettingsFragment;
 import com.flyzebra.utils.FlyLog;
@@ -31,13 +32,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 添加进入AllApps后门
      */
-    int passWordCount = 0;
+    int passWordCount1 = 0;
+    int passWordCount2 = 0;
     int setp = 200;
     Rect rect[] = new Rect[]{new Rect(0, 240, setp, 240 + setp),
             new Rect(1080 - setp, 240, 1080, 240 + setp),
             new Rect(0, 1920 - setp, setp, 1920),
             new Rect(1080 - setp, 1920 - setp, 1080, 1920)};
-    int passWords[] = new int[]{0, 1, 3, 2};
+    int passWords1[] = new int[]{0, 1, 3, 2};
+    int passWords2[] = new int[]{0, 2, 3, 1};
 
     private Fragment mFragment;
 
@@ -86,14 +89,24 @@ public class MainActivity extends AppCompatActivity {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int) ev.getX();
             int y = (int) ev.getY();
-            if (rect[passWords[passWordCount]].contains(x, y)) {
-                passWordCount++;
+            if (rect[passWords1[passWordCount1]].contains(x, y)) {
+                passWordCount1++;
             } else {
-                passWordCount = 0;
+                passWordCount1 = 0;
             }
-            if (passWordCount >= passWords.length) {
-                passWordCount = 0;
+            if (passWordCount1 >= passWords1.length) {
+                passWordCount1 = 0;
                 replaceFragMent(new AllotaFragment());
+            }
+
+            if (rect[passWords2[passWordCount2]].contains(x, y)) {
+                passWordCount2++;
+            } else {
+                passWordCount2 = 0;
+            }
+            if (passWordCount2 >= passWords2.length) {
+                passWordCount2 = 0;
+                replaceFragMent(new FileFragment());
             }
         }
         return super.onTouchEvent(ev);

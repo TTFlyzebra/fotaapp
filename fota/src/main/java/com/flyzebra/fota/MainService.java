@@ -107,9 +107,11 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 break;
             //升级包数据校验错误!
             case CODE_11:
+                startCheckUpVersion(CHECK_TIME);
                 break;
             //安装升级包错误!
             case CODE_12:
+                startCheckUpVersion(CHECK_TIME);
                 break;
             //系统正在更新
             case CODE_91:

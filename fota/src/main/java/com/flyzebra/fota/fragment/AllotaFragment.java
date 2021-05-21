@@ -27,7 +27,7 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
-public class AllotaFragment extends Fragment implements AllotaAdapter.CallbackOnItemClick {
+public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClick {
     private TextView tv_version;
     private ListView listView;
 
@@ -86,7 +86,7 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.CallbackOn
     }
 
     @Override
-    public void click(View v) {
+    public void onItemclick(View v) {
         int pos = (int) v.getTag();
         Flyup.getInstance().updaterOtaPackage(vOtaList.get(pos));
         ((MainActivity)getActivity()).replaceFragMent(new MainFragment());
