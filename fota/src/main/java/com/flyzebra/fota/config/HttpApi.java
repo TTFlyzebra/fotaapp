@@ -6,5 +6,5 @@ public class HttpApi {
     //local test server
     //public static String API_BASE_URL = "http://192.168.8.140/flyota/";
 
-    public static String API_BASE_URL = "http://192.168.1.87/flyota/";
+    public static String API_BASE_URL = "http://103.206.203.140:801/flyota/";
 }
