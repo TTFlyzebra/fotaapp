@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
     int passWordCount1 = 0;
     int passWordCount2 = 0;
     int setp = 200;
-    Rect rect[] = new Rect[]{new Rect(0, 240, setp, 240 + setp),
-            new Rect(1080 - setp, 240, 1080, 240 + setp),
-            new Rect(0, 1920 - setp, setp, 1920),
-            new Rect(1080 - setp, 1920 - setp, 1080, 1920)};
+    Rect[] rect;
     int passWords1[] = new int[]{0, 1, 3, 2};
     int passWords2[] = new int[]{0, 2, 3, 1};
 
@@ -48,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        initRect();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             for (String s : PERMISSIONS_STORAGE) {
                 if (ActivityCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
@@ -65,6 +62,17 @@ public class MainActivity extends AppCompatActivity {
         startService(mainintent);
 
         replaceFragMent(new MainFragment());
+    }
+
+    private void initRect() {
+        DisplayMetrics dm = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = Math.min(dm.widthPixels,dm.heightPixels);
+        int height = Math.max(dm.widthPixels,dm.heightPixels);
+        rect = new Rect[]{new Rect(0, 240, setp, 240 + setp),
+                new Rect(width - setp, 240, width, 240 + setp),
+                new Rect(0, height - setp, setp, height),
+                new Rect(width - setp, height - setp, width, height)};
     }
 
     public void replaceFragMent(Fragment fragment) {
