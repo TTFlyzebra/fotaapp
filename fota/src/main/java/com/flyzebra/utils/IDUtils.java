@@ -29,14 +29,7 @@ public class IDUtils {
      */
     public static String getModel(Context context) {
         String model = SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
-        switch (model) {
-            case "C10":
-            case "C8":
-            case "CPE02":
-                return model;
-            default:
-                return "CM3003";
-        }
+        return model;
     }
 
     /**
