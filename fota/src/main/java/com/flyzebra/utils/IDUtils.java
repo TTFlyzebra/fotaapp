@@ -28,8 +28,11 @@ public class IDUtils {
      * @return
      */
     public static String getModel(Context context) {
-        String model = SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
-        return model;
+        String cm3003 = SystemPropUtils.get("persist.vendor.display.id", "").toUpperCase();
+        if(!TextUtils.isEmpty(cm3003)){
+            return "CM3003";
+        }
+        return SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
     }
 
     /**
