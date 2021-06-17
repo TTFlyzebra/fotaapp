@@ -11,6 +11,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.flyzebra.fota.R;
+import com.flyzebra.fota.config.HttpApi;
 import com.flyzebra.utils.SystemPropUtils;
 
 import static com.flyzebra.fota.config.HttpApi.PROP_API_BASE_URL;
@@ -31,7 +32,7 @@ public class SettingsFragment extends Fragment {
         bt_save = view.findViewById(R.id.bt_save);
         et_otaurl = view.findViewById(R.id.et_otaurl);
 
-        et_otaurl.setText(SystemPropUtils.get(PROP_API_BASE_URL, ""));
+        et_otaurl.setText(SystemPropUtils.get(PROP_API_BASE_URL, HttpApi.API_BASE_URL));
 
         bt_save.setOnClickListener(new View.OnClickListener() {
             @Override

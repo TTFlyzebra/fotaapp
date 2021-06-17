@@ -15,9 +15,9 @@ import com.flyzebra.utils.FlyLog;
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
-    private static final int CHECK_TIME = 60 * 60 * 1000;
-    private static final int MIN_TIME = 5 * 60 * 1000;
-    private static final int FIRST_TIME = 10 * 60 * 1000;
+    private static final long CHECK_TIME = 24 * 60 * 60 * 1000;
+    private static final long MIN_TIME = 4 * 60 * 60 * 1000;
+    private static final long FIRST_TIME = 10 * 60 * 1000;
     private NotificationView notificationView;
 
     @Override
@@ -29,7 +29,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     public void onCreate() {
         super.onCreate();
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
-        FlyLog.e("++++++OcFota 1.03---2021.05.18++++++");
+        FlyLog.e("++++++OcFota 1.04---2021.05.18++++++");
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
         FlyLog.e("++++online fota sevice is start!++++");
         Flyup.getInstance().addListener(this);
