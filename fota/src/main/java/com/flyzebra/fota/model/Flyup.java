@@ -57,6 +57,7 @@ public class Flyup implements IFlyup, OsEvent {
 
     private Context mContext;
     private AtomicBoolean isRunning = new AtomicBoolean(false);
+    private AtomicBoolean isFinish = new AtomicBoolean(false);
 
     private ApiAction apiAction;
 
@@ -77,6 +78,11 @@ public class Flyup implements IFlyup, OsEvent {
     @Override
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    @Override
+    public boolean isFinish() {
+        return isFinish.get();
     }
 
     @Override
@@ -278,7 +284,7 @@ public class Flyup implements IFlyup, OsEvent {
 
         @Override
         public void onPayloadApplicationComplete(int i) {
-            isRunning.set(false);
+            isFinish.set(true);
             notifyListener(CODE_12, 100, "系统升级完成，需要重启系统才能生效！");
         }
     };

@@ -135,7 +135,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                 if (!Flyup.getInstance().isRunning()) {
                     Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
                 } else {
-                    Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
+                    if(!Flyup.getInstance().isFinish()){
+                        Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
+                    }else{
+                        //TODO::reboot now
+                    }
                 }
                 break;
         }

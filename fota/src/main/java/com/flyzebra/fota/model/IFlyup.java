@@ -66,6 +66,14 @@ public interface IFlyup {
 
 
     /**
+     * 返回更新状态
+     * @return true:正在更新
+     * false:不是处于更新状态n
+     */
+    boolean isFinish();
+
+
+    /**
      * 获取当前更新信息
      */
     OtaPackage getOtaPackage();
