@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.flyzebra.fota"
-        minSdkVersion 19
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode gitCommitCount.toInteger()
         versionName "v1.05."+gitSHA+"."+createTime
@@ -51,8 +51,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true //混淆
-            zipAlignEnabled true//Zipalign优化
-            shrinkResources true// 移除无用的resource文件
+            zipAlignEnabled true //Zipalign优化
+            shrinkResources true //移除无用的resource文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -81,7 +81,6 @@ android {
 }
 
 dependencies {
-    compileOnly files('libs\\framework.jar')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -96,4 +95,5 @@ dependencies {
     implementation('com.squareup.retrofit2:converter-gson:2.6.0') {
         exclude group: 'com.google.code.gson'
     }
+    compileOnly files('libs\\framework.jar')
 }
