@@ -7,7 +7,6 @@ import android.content.Intent;
 
 import com.flyzebra.utils.FlyLog;
 
-
 /**
  * Created by FlyZebra on 2018/1/4.
  */

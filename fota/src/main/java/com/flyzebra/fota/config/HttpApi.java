@@ -1,1 +1,1 @@
-package com.flyzebra.fota.config;public class HttpApi {    public static String PROP_API_BASE_URL = "persist.sys.fota.url";    public static String API_BASE_URL = "http://192.168.1.87/zebra/";}
+package com.flyzebra.fota.config;public class HttpApi {    public static String PROP_API_BASE_URL = "persist.sys.fota.url";    public static String API_BASE_URL = "http://124.222.81.234/zebra/";}
