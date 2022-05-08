@@ -1,9 +1,6 @@
 package com.flyzebra.fota;
 
 import android.Manifest;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -16,6 +13,9 @@ import android.view.MotionEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.flyzebra.fota.fragment.AllotaFragment;
 import com.flyzebra.fota.fragment.FileFragment;
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         mainintent.setClass(this, MainService.class);
         mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startService(mainintent);
-
         replaceFragMent(new MainFragment());
     }
 
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = Math.min(dm.widthPixels, dm.heightPixels);
         int height = Math.max(dm.widthPixels, dm.heightPixels);
-        FlyLog.d("width=%d, height=%d", width, height);
         int vheight = height/7;
         setp = width / 4;
         rect = new Rect[]{new Rect(0, vheight, setp, vheight + setp),
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void replaceFragMent(Fragment fragment) {
         mFragment = fragment;
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.ac_fm01, fragment);
         ft.commit();

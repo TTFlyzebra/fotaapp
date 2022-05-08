@@ -1,6 +1,5 @@
 package com.flyzebra.fota.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.flyzebra.fota.MainActivity;
 import com.flyzebra.fota.R;
@@ -60,7 +61,6 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
             return false;
         }
     };
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

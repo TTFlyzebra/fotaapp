@@ -1,6 +1,5 @@
 package com.flyzebra.fota.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.flyzebra.fota.R;
 import com.flyzebra.fota.config.HttpApi;
