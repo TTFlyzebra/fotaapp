@@ -28,7 +28,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     public void onCreate() {
         super.onCreate();
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
-        FlyLog.e("++++++OcFota 1.04---2021.05.18++++++");
+        FlyLog.e("++++F-ZEBRA OTA 1.05--2022.05.08++++");
         FlyLog.e("++++++++++++++++++++++++++++++++++++");
         FlyLog.e("++++online fota sevice is start!++++");
         Flyup.getInstance().addListener(this);
