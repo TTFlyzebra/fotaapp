@@ -66,6 +66,7 @@ public class Flyup implements IFlyup, OsEvent {
     private int lastProgress = 0;
     private String lastMessage = "";
     private AtomicBoolean isFirst = new AtomicBoolean(true);
+    private UpdateEngine mUpdateEngine = new UpdateEngine();
 
     @Override
     public void init(Context context) {
@@ -272,7 +273,7 @@ public class Flyup implements IFlyup, OsEvent {
     UpdateEngineCallback callback = new UpdateEngineCallback() {
         @Override
         public void onStatusUpdate(int i, float v) {
-            notifyListener(CODE_11, Math.min((int)v * 100, 100), "正在升级系统, 步骤(" + i + "/5).");
+            notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在升级系统, 步骤(" + i + "/5).");
         }
 
         @Override
@@ -334,7 +335,7 @@ public class Flyup implements IFlyup, OsEvent {
                     isRunning.set(false);
                     notifyListener(CODE_10, 100, "升级文件校验失败！");
                 }
-                UpdateEngine mUpdateEngine = new UpdateEngine();
+                mUpdateEngine.unbind();
                 mUpdateEngine.bind(callback);
                 mUpdateEngine.applyPayload(
                         FILE_URL_PREFIX+file.getAbsolutePath(),

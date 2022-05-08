@@ -61,7 +61,7 @@ public class NotificationView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "upgrade";
             String channelName = "升级系统";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
             channel.setSound(null, null);
             notimanager.createNotificationChannel(channel);

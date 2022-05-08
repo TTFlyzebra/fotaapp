@@ -11,7 +11,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FlyLog.setTAG("ZEBRA-FOTA-APP");
+        FlyLog.setTAG("ZEBRA-FOTA");
 
         Intent mainintent = new Intent();
         mainintent.setClass(getApplicationContext(), MainService.class);
