@@ -34,14 +34,14 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../keystore/vlte.keystore")
+            storeFile file("../keystore/zebra.keystore")
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
 
         debug {
-            storeFile file("../keystore/vlte.keystore")
+            storeFile file("../keystore/zebra.keystore")
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
@@ -81,7 +81,7 @@ android {
 }
 
 dependencies {
-
+    compileOnly files('libs\\framework.jar')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

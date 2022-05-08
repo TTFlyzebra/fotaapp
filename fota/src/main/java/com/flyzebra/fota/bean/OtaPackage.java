@@ -10,6 +10,7 @@ public class OtaPackage {
     public int upType;
     public int otaType;
     public String releaseNote;
+    public String remark;
 
     @Override
     public String toString() {
@@ -23,6 +24,7 @@ public class OtaPackage {
                 ", \"upType\":" + upType +
                 ", \"otaType\":" + otaType +
                 ", \"releaseNote\":\"" + releaseNote + '\"' +
+                ", \"remark\":\"" + remark + '\"' +
                 '}';
     }
 }

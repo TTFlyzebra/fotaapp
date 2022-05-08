@@ -93,7 +93,7 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
             Flyup.getInstance().updaterOtaPackage(vOtaList.get(pos));
             ((MainActivity)getActivity()).replaceFragMent(new MainFragment());
         }else{
-            Toast.makeText(getActivity(),"错误！升级系统正在运行！",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(),"已有升级任务正在运行！",Toast.LENGTH_LONG).show();
         }
     }
 }

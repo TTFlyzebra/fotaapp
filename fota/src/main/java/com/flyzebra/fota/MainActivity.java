@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     int passWordCount1 = 0;
     int passWordCount2 = 0;
     Rect[] rect;
-    int setp = 200;
+    int setp = 400;
     int passWords1[] = new int[]{0, 1, 3, 2};
     int passWords2[] = new int[]{0, 2, 3, 1};
 

@@ -63,6 +63,7 @@ public class NotificationView {
             String channelName = "升级系统";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setSound(null, null);
             notimanager.createNotificationChannel(channel);
             noti = new Notification.Builder(context, "upgrade")
                     .setCustomContentView(remoteviews)

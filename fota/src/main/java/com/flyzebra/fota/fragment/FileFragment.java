@@ -37,7 +37,6 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
     private String lastDir = FIRST_DIR;
     private Stack<String> stackList = new Stack<>();
 
-
     private static final HandlerThread mTaskThread = new HandlerThread("fota_filelist");
 
     static {
@@ -98,7 +97,7 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
                 Flyup.getInstance().updaterFile(new File(fileInfo.fullName));
                 ((MainActivity) getActivity()).replaceFragMent(new MainFragment());
             }else{
-                Toast.makeText(getActivity(),"错误！升级系统正在运行！",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"已有升级任务正在运行！",Toast.LENGTH_LONG).show();
             }
         }
     }

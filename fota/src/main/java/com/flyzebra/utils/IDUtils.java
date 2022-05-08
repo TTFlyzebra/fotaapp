@@ -28,10 +28,6 @@ public class IDUtils {
      * @return
      */
     public static String getModel(Context context) {
-        String cm3003 = SystemPropUtils.get("persist.vendor.display.id", "").toUpperCase();
-        if(!TextUtils.isEmpty(cm3003)){
-            return "CM3003";
-        }
         return SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
     }
 
@@ -50,10 +46,7 @@ public class IDUtils {
     }
 
     public static String getSnUid(Context context) {
-        String snuid = SystemPropUtils.get("persist.radio.mcwill.pid", "").replace(".", "").trim();
-        if (TextUtils.isEmpty(snuid)) {
-            snuid = SystemPropUtils.get("persist.sys.nv.sn", "");
-        }
+        String snuid = SystemPropUtils.get("ro.serialno", "");
         return snuid.toUpperCase();
     }
 
@@ -123,7 +116,6 @@ public class IDUtils {
 
     /**
      * 获取设备AndroidID
-     *
      * @param context 上下文
      * @return AndroidID
      */
@@ -136,6 +128,4 @@ public class IDUtils {
             return aid.toUpperCase();
         }
     }
-
-
 }

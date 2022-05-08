@@ -12,7 +12,6 @@ import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
 
-
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final long CHECK_TIME = 24 * 60 * 60 * 1000;
@@ -97,21 +96,21 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_08:
                 startCheckUpVersion(MIN_TIME);
                 break;
-            //升级包数据校验...
+            //获取升级参数失败！
             case CODE_09:
                 notificationView.show(code, progress, msg);
                 break;
-            //安装升级包...
+            //升级文件校验失败！
             case CODE_10:
                 notificationView.show(code, progress, msg);
                 break;
-            //升级包数据校验错误!
+            //正在升级系统, 步骤(1/5).
             case CODE_11:
-                startCheckUpVersion(CHECK_TIME);
+                notificationView.show(code, progress, msg);
                 break;
-            //安装升级包错误!
+            //系统升级完成，需要重启系统才能生效！
             case CODE_12:
-                startCheckUpVersion(CHECK_TIME);
+                notificationView.show(code, progress, msg);
                 break;
             //系统正在更新
             case CODE_91:
