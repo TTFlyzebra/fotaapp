@@ -126,12 +126,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                 bt_updater.setText(R.string.check_system);
                 bt_updater.setEnabled(true);
                 break;
-            //升级文件校验失败！
+            //升级失败！
             case CODE_10:
                 bt_updater.setText(R.string.check_system);
                 bt_updater.setEnabled(true);
                 break;
-            //正在升级系统, 步骤(1/5).
+            //正在升级系统
             case CODE_11:
                 bt_updater.setText(R.string.up_system_running);
                 bt_updater.setEnabled(false);
@@ -162,31 +162,29 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.bt_updater:
-                if (!Flyup.getInstance().isRunning()) {
-                    Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
+        if (view.getId() == R.id.bt_updater) {
+            if (!Flyup.getInstance().isRunning()) {
+                Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
+            } else {
+                if (!Flyup.getInstance().isFinish()) {
+                    Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
                 } else {
-                    if (!Flyup.getInstance().isFinish()) {
-                        Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle("确定要现在重启系统！");
-                        builder.setPositiveButton("确定",
-                                (dialog, which) -> {
-                                    //SystemProperties.set("sys.powerctl", "reboot");
-                                    Intent reboot = new Intent(Intent.ACTION_REBOOT);
-                                    reboot.putExtra("nowait", 1);
-                                    reboot.putExtra("interval", 1);
-                                    reboot.putExtra("window", 0);
-                                    Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
-                                    dialog.dismiss();
-                                });
-                        builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
-                        builder.show();
-                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("确定要现在重启系统！");
+                    builder.setPositiveButton("确定",
+                            (dialog, which) -> {
+                                //SystemProperties.set("sys.powerctl", "reboot");
+                                Intent reboot = new Intent(Intent.ACTION_REBOOT);
+                                reboot.putExtra("nowait", 1);
+                                reboot.putExtra("interval", 1);
+                                reboot.putExtra("window", 0);
+                                Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
+                                dialog.dismiss();
+                            });
+                    builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
+                    builder.show();
                 }
-                break;
+            }
         }
     }
 }

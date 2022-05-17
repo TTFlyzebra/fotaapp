@@ -279,13 +279,61 @@ public class Flyup implements IFlyup, OsEvent {
     UpdateEngineCallback callback = new UpdateEngineCallback() {
         @Override
         public void onStatusUpdate(int i, float v) {
-            notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在升级系统, 步骤(" + i + "/5).");
+            switch (i){
+                case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
+                    notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在检查系统准备更新...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
+                    notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在解压升级包...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.VERIFYING:
+                    notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在校验升级包...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.FINALIZING:
+                    notifyListener(CODE_11, Math.min((int)(v * 100), 100), "正在后台安全升级系统...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.ATTEMPTING_ROLLBACK:
+                    notifyListener(CODE_11, Math.min((int)(v * 100), 100), "更新失败，正在尝试回滚更新...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
+                    notifyListener(CODE_12, 100, "需要重启系统完成升级...");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
+                case UpdateEngine.UpdateStatusConstants.DISABLED:
+                case UpdateEngine.UpdateStatusConstants.IDLE:
+                case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
+                default:
+                    isRunning.set(false);
+                    notifyListener(CODE_10, 100, "升级失败，重启系统再次尝试...");
+                    break;
+            }
+
         }
 
         @Override
         public void onPayloadApplicationComplete(int i) {
-            isFinish.set(true);
-            notifyListener(CODE_12, 100, "系统升级完成，需要重启系统才能生效！");
+            switch (i){
+                case UpdateEngine.ErrorCodeConstants.SUCCESS:
+                    isFinish.set(true);
+                    notifyListener(CODE_12, 100, "系统升级完成，需要重启系统才能生效！");
+                    break;
+                case UpdateEngine.ErrorCodeConstants.ERROR:
+                case UpdateEngine.ErrorCodeConstants.FILESYSTEM_COPIER_ERROR:
+                case UpdateEngine.ErrorCodeConstants.POST_INSTALL_RUNNER_ERROR:
+                case UpdateEngine.ErrorCodeConstants.PAYLOAD_MISMATCHED_TYPE_ERROR:
+                case UpdateEngine.ErrorCodeConstants.INSTALL_DEVICE_OPEN_ERROR:
+                case UpdateEngine.ErrorCodeConstants.KERNEL_DEVICE_OPEN_ERROR:
+                case UpdateEngine.ErrorCodeConstants.DOWNLOAD_TRANSFER_ERROR:
+                case UpdateEngine.ErrorCodeConstants.PAYLOAD_HASH_MISMATCH_ERROR:
+                case UpdateEngine.ErrorCodeConstants.PAYLOAD_SIZE_MISMATCH_ERROR:
+                case UpdateEngine.ErrorCodeConstants.DOWNLOAD_PAYLOAD_VERIFICATION_ERROR:
+                case UpdateEngine.ErrorCodeConstants.PAYLOAD_TIMESTAMP_ERROR:
+                case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
+                default:
+                    isRunning.set(false);
+                    notifyListener(CODE_10, 100, "系统升级失败，错误代码"+i);
+                    break;
+            }
         }
     };
 

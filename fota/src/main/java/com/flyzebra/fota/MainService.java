@@ -1,7 +1,10 @@
 package com.flyzebra.fota;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -54,10 +57,25 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         super.onDestroy();
     }
 
+    private boolean isConnect(){
+        boolean isConnect = false;
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkCapabilities networkCapabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
+        if (networkCapabilities != null) {
+            isConnect = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+        }
+        return isConnect;
+    }
+
     @Override
     public void run() {
         FlyLog.d("fota service running.....");
-        Flyup.getInstance().updateNewVersion();
+        if (!isConnect()){
+            FlyLog.w("Network is not connect, retry after 2 seconds.");
+            startCheckUpVersion(2000);
+        }else{
+            Flyup.getInstance().updateNewVersion();
+        }
     }
 
     @Override
@@ -100,11 +118,11 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             case CODE_09:
                 notificationView.show(code, progress, msg);
                 break;
-            //升级文件校验失败！
+            //升级失败！
             case CODE_10:
                 notificationView.show(code, progress, msg);
                 break;
-            //正在升级系统, 步骤(1/5).
+            //正在升级系统
             case CODE_11:
                 notificationView.show(code, progress, msg);
                 break;
