@@ -4,9 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -46,13 +44,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initRect();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            for (String s : PERMISSIONS_STORAGE) {
-                if (ActivityCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
-                    break;
-                }
+
+        for (String s : PERMISSIONS_STORAGE) {
+            if (ActivityCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+                break;
             }
         }
 
@@ -64,21 +60,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRect() {
-        DisplayMetrics dm = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = Math.min(dm.widthPixels, dm.heightPixels);
-        int height = Math.max(dm.widthPixels, dm.heightPixels);
-        setp = width / 4;
-        rect = new Rect[]{new Rect(0, 0, setp, setp),
-                new Rect(width - setp, 0, width, setp),
-                new Rect(0, height - setp, setp, height),
-                new Rect(width - setp, height - setp, width, height)};
+        int width = getWindow().getDecorView().getWidth();
+        int height = getWindow().getDecorView().getHeight();;
+        setp = width / 8;
+        rect = new Rect[]{new Rect(0, 0, setp, height/2),
+                new Rect(width - setp, 0, width, height/2),
+                new Rect(0, height/2, setp, height),
+                new Rect(width - setp, height/2, width, height)};
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initRect();
     }
 
     public void replaceFragMent(Fragment fragment) {
@@ -101,8 +94,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            initRect();
             int x = (int) ev.getX();
             int y = (int) ev.getY();
+            FlyLog.d(rect[passWords1[passWordCount1]].toString());
             if (rect[passWords1[passWordCount1]].contains(x, y)) {
                 passWordCount1++;
             } else {

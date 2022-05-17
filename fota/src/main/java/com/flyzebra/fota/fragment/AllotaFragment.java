@@ -51,7 +51,7 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
                 + "MYID:" + IDUtils.getAndroidID(getActivity()) + "\n"
         );
 
-        listView = view.findViewById(R.id.fm_lv01);
+        listView = view.findViewById(R.id.fm_file_lv01);
         mAdapter = new AllotaAdapter(getActivity(), vOtaList, R.layout.allota_item, this);
         listView.setAdapter(mAdapter);
 
@@ -65,7 +65,6 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
 
             @Override
             public void onNext(@NonNull RetAllVersion allVersion) {
-                FlyLog.d("onNext:"+allVersion);
                 if(allVersion.data!=null) {
                     vOtaList.clear();
                     vOtaList.addAll(allVersion.data);

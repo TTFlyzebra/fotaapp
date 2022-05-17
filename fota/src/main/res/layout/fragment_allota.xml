@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="4dp"
-    android:background="#000"
+    android:background="#4F0000FF"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -17,7 +17,7 @@
         android:textColor="#FFF" />
 
     <ListView
-        android:id="@+id/fm_lv01"
+        android:id="@+id/fm_file_lv01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_version"

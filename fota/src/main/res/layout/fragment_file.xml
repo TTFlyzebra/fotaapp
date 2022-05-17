@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="4dp"
-    android:background="#000"
+    android:background="#4F0000FF"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:textColor="#000"
+        android:id="@+id/fm_file_tv01"
+        android:gravity="start|center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"/>
+
     <ListView
-        android:id="@+id/fm_lv01"
+        android:id="@+id/fm_file_lv01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:background="#FFF" />
 
-</RelativeLayout>
+</LinearLayout>

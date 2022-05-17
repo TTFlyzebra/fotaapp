@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -23,20 +24,17 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Stack;
 
 public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
-    private ListView listView;
+    private ListView fm_file_lv01;
+    private TextView fm_file_tv01;
 
     private FileAdapter mAdapter;
     private final List<FileInfo> vFileList = new ArrayList<>();
-    private static final String FIRST_DIR = "/sdcard/";
-    private String lastDir = FIRST_DIR;
-    private Stack<String> stackList = new Stack<>();
+    private static final String FIRST_DIR = "/sdcard";
 
     private static final HandlerThread mTaskThread = new HandlerThread("fota_filelist");
 
@@ -47,19 +45,19 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
     private static final Handler tHandler = new Handler(mTaskThread.getLooper());
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private View.OnKeyListener backlistener = new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View view, int i, KeyEvent keyEvent) {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                if (i == KeyEvent.KEYCODE_BACK) {
-                    if (!stackList.empty()) {
-                        listFiles(stackList.pop());
-                        return true;
-                    }
+    private View.OnKeyListener backlistener = (view, i, keyEvent) -> {
+        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+            if (i == KeyEvent.KEYCODE_BACK) {
+                String path = fm_file_tv01.getText().toString();
+                if (!path.equals(FIRST_DIR)) {
+                    int last = path.lastIndexOf('/');
+                    String listPath = path.substring(0, last);
+                    listFiles(listPath);
+                    return true;
                 }
             }
-            return false;
         }
+        return false;
     };
 
     @Override
@@ -72,26 +70,23 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener(backlistener);
-        listView = view.findViewById(R.id.fm_lv01);
+        fm_file_lv01 = view.findViewById(R.id.fm_file_lv01);
+        fm_file_tv01 = view.findViewById(R.id.fm_file_tv01);
         mAdapter = new FileAdapter(getActivity(), vFileList, R.layout.file_item, this);
-        listView.setAdapter(mAdapter);
+        fm_file_lv01.setAdapter(mAdapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        stackList.clear();
         listFiles(FIRST_DIR);
-        lastDir = FIRST_DIR;
     }
 
     @Override
     public void onItemclick(View v) {
         FileInfo fileInfo = (FileInfo) v.getTag();
         if (fileInfo.isDirectory()) {
-            stackList.push(lastDir);
             listFiles(fileInfo.fullName);
-            lastDir = fileInfo.fullName;
         } else {
             if (!Flyup.getInstance().isRunning()) {
                 Flyup.getInstance().updaterFile(new File(fileInfo.fullName));
@@ -109,60 +104,53 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
         super.onDestroy();
     }
 
-    private void listFiles(String filePath) {
-        tHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                File sdcard = new File(filePath);
-                if (sdcard.isDirectory()) {
-                    File[] files = sdcard.listFiles();
-                    if (files != null) {
-                        final List<FileInfo> tmpList = new ArrayList<>();
-                        for (File f : files) {
-                            if (f == null) continue;
-                            if (f.isDirectory() && !f.getName().equals("update")) continue;
-                            if (!f.isDirectory() && !f.getName().toUpperCase().endsWith(".ZIP")) continue;
-                            FileInfo fileInfo = new FileInfo();
-                            fileInfo.type = f.isDirectory() ? 0 : 1;
-                            fileInfo.fileName = f.getName();
-                            fileInfo.fullName = f.getAbsolutePath();
-                            long time = f.lastModified();
-                            String ctime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(new Date(time));
-                            if (f.isDirectory()) {
-                                fileInfo.otherInfo = "Date:" + ctime;
+    private void listFiles(final String filePath) {
+        tHandler.post(() -> {
+            File sdcard = new File(filePath);
+            if (sdcard.isDirectory()) {
+                File[] files = sdcard.listFiles();
+                if (files != null) {
+                    final List<FileInfo> tmpList = new ArrayList<>();
+                    for (File f : files) {
+                        if (f == null) continue;
+                        if (f.getName().startsWith(".")) continue;
+                        //if (f.isDirectory() && !f.getName().equals("update")) continue;
+                        if (!f.isDirectory() && !f.getName().toUpperCase().endsWith(".ZIP")) continue;
+                        FileInfo fileInfo = new FileInfo();
+                        fileInfo.type = f.isDirectory() ? 0 : 1;
+                        fileInfo.fileName = f.getName();
+                        fileInfo.fullName = f.getAbsolutePath();
+                        long time = f.lastModified();
+                        String ctime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(new Date(time));
+                        if (f.isDirectory()) {
+                            fileInfo.otherInfo = "Date:" + ctime;
+                        } else {
+                            long filesize = f.length();
+                            String strfilesize;
+                            if ((filesize >> 20) > 0) {
+                                strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024 / 1024)) + "M";
+                            } else if ((filesize >> 10) > 0) {
+                                strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024)) + "KB";
                             } else {
-                                long filesize = f.length();
-                                String strfilesize;
-                                if ((filesize >> 20) > 0) {
-                                    strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024 / 1024)) + "M";
-                                } else if ((filesize >> 10) > 0) {
-                                    strfilesize = (new DecimalFormat(".00").format((float) filesize / 1024)) + "KB";
-                                } else {
-                                    strfilesize = filesize + "Byte";
-                                }
-                                fileInfo.otherInfo = "Date:" + ctime + "  Size:" + strfilesize;
+                                strfilesize = filesize + "Byte";
                             }
-                            tmpList.add(fileInfo);
+                            fileInfo.otherInfo = "Date:" + ctime + "  Size:" + strfilesize;
                         }
-                        Collections.sort(tmpList, new Comparator<FileInfo>() {
-                            @Override
-                            public int compare(FileInfo t1, FileInfo t2) {
-                                if (t1.type > t2.type) {
-                                    return 1;
-                                } else if (t1.type < t2.type) {
-                                    return -1;
-                                } else return Integer.compare(t1.fileName.compareToIgnoreCase(t2.fileName), 0);
-                            }
-                        });
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                vFileList.clear();
-                                vFileList.addAll(tmpList);
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
+                        tmpList.add(fileInfo);
                     }
+                    Collections.sort(tmpList, (t1, t2) -> {
+                        if (t1.type > t2.type) {
+                            return 1;
+                        } else if (t1.type < t2.type) {
+                            return -1;
+                        } else return Integer.compare(t1.fileName.compareToIgnoreCase(t2.fileName), 0);
+                    });
+                    mHandler.post(() -> {
+                        vFileList.clear();
+                        vFileList.addAll(tmpList);
+                        fm_file_tv01.setText(filePath);
+                        mAdapter.notifyDataSetChanged();
+                    });
                 }
             }
         });
