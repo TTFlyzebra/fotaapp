@@ -34,7 +34,7 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
 
     private FileAdapter mAdapter;
     private final List<FileInfo> vFileList = new ArrayList<>();
-    private static final String FIRST_DIR = "/data/cache";
+    private static final String FIRST_DIR = "/sdcard/";
     private String lastDir = FIRST_DIR;
     private Stack<String> stackList = new Stack<>();
 
@@ -120,7 +120,7 @@ public class FileFragment extends Fragment implements FileAdapter.OnItemClick {
                         final List<FileInfo> tmpList = new ArrayList<>();
                         for (File f : files) {
                             if (f == null) continue;
-                            if (f.isDirectory() && !f.getName().equals("recovery")) continue;
+                            if (f.isDirectory() && !f.getName().equals("update")) continue;
                             if (!f.isDirectory() && !f.getName().toUpperCase().endsWith(".ZIP")) continue;
                             FileInfo fileInfo = new FileInfo();
                             fileInfo.type = f.isDirectory() ? 0 : 1;

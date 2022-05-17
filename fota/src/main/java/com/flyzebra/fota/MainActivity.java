@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     int passWordCount1 = 0;
     int passWordCount2 = 0;
     Rect[] rect;
-    int setp = 400;
+    int setp = 200;
     int passWords1[] = new int[]{0, 1, 3, 2};
     int passWords2[] = new int[]{0, 2, 3, 1};
 
@@ -68,10 +68,9 @@ public class MainActivity extends AppCompatActivity {
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = Math.min(dm.widthPixels, dm.heightPixels);
         int height = Math.max(dm.widthPixels, dm.heightPixels);
-        int vheight = height/7;
         setp = width / 4;
-        rect = new Rect[]{new Rect(0, vheight, setp, vheight + setp),
-                new Rect(width - setp, vheight, width, vheight + setp),
+        rect = new Rect[]{new Rect(0, 0, setp, setp),
+                new Rect(width - setp, 0, width, setp),
                 new Rect(0, height - setp, setp, height),
                 new Rect(width - setp, height - setp, width, height)};
     }
@@ -104,12 +103,9 @@ public class MainActivity extends AppCompatActivity {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int) ev.getX();
             int y = (int) ev.getY();
-            FlyLog.d(rect[passWords1[passWordCount1]].toString());
             if (rect[passWords1[passWordCount1]].contains(x, y)) {
-                FlyLog.d("in x = %d, y =%d ", x, y);
                 passWordCount1++;
             } else {
-                FlyLog.d("out x = %d, y =%d ", x, y);
                 passWordCount1 = 0;
             }
             if (passWordCount1 >= passWords1.length) {
