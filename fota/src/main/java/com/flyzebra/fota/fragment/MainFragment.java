@@ -1,5 +1,7 @@
 package com.flyzebra.fota.fragment;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +21,9 @@ import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtils;
 
-public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, OsEvent {
+import java.util.Objects;
 
+public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, OsEvent {
 
     private TextView tv_version, tv_verinfo, tv_upinfo;
     private ProgressBar progressBar;
@@ -77,47 +80,76 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
             //已是最新版本
             case CODE_01:
                 upVersionInfo();
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
             //获取到最新版本
             case CODE_02:
                 upVersionInfo();
+                bt_updater.setText(R.string.updater_system);
+                bt_updater.setEnabled(true);
                 break;
             //获取最新版本失败
             case CODE_03:
                 upVersionInfo();
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
             //获取最新版本失败，网络错误！
             case CODE_04:
+                bt_updater.setText(R.string.check_system);
+                tv_upinfo.setText("");
+                bt_updater.setEnabled(true);
                 break;
             //正在下载升级包...
             case CODE_05:
+                bt_updater.setText(R.string.up_system_running);
+                bt_updater.setEnabled(false);
                 break;
             //下载升级包出错!
             case CODE_06:
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
             //正在校验升级包MD5值...
             case CODE_07:
+                bt_updater.setText(R.string.up_system_running);
+                bt_updater.setEnabled(false);
                 break;
             //升级包MD5值校验错误!
             case CODE_08:
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
-            //升级包数据校验...
+            //获取升级参数失败！
             case CODE_09:
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
-            //准备安装升级包...
+            //升级文件校验失败！
             case CODE_10:
+                bt_updater.setText(R.string.check_system);
+                bt_updater.setEnabled(true);
                 break;
-            //升级包数据校验错误!
+            //正在升级系统, 步骤(1/5).
             case CODE_11:
+                bt_updater.setText(R.string.up_system_running);
+                bt_updater.setEnabled(false);
                 break;
-            //安装升级包错误!
+            //系统升级完成，需要重启系统才能生效！
             case CODE_12:
+                bt_updater.setText(R.string.restart_system);
+                bt_updater.setEnabled(true);
                 break;
             //系统正在更新
             case CODE_91:
+                bt_updater.setText(R.string.up_system_running);
+                bt_updater.setEnabled(false);
                 break;
             //需要手动更新版本
             case CODE_92:
+                bt_updater.setText(R.string.updater_system);
+                bt_updater.setEnabled(true);
                 break;
         }
     }
@@ -135,10 +167,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                 if (!Flyup.getInstance().isRunning()) {
                     Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
                 } else {
-                    if(!Flyup.getInstance().isFinish()){
+                    if (!Flyup.getInstance().isFinish()) {
                         Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
-                    }else{
-                        //TODO::reboot now
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("确定要现在重启系统！");
+                        builder.setPositiveButton("确定",
+                                (dialog, which) -> {
+                                    //SystemProperties.set("sys.powerctl", "reboot");
+                                    Intent reboot = new Intent(Intent.ACTION_REBOOT);
+                                    reboot.putExtra("nowait", 1);
+                                    reboot.putExtra("interval", 1);
+                                    reboot.putExtra("window", 0);
+                                    Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
+                                    dialog.dismiss();
+                                });
+                        builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
+                        builder.show();
                     }
                 }
                 break;

@@ -62,8 +62,8 @@
 
         <Button
             android:id="@+id/bt_updater"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/updater_system" />
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="@string/check_system" />
     </LinearLayout>
 </RelativeLayout>
