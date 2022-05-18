@@ -3,7 +3,7 @@ package com.flyzebra.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class SPUtils {
+public class SPUtil {
     public static final String FILE_CONFIG = "config";
 
     public static Object get(Context context, String key, Object defaultValue) {

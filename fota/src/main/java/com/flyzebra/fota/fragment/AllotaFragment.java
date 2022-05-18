@@ -19,7 +19,7 @@ import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.IDUtils;
+import com.flyzebra.utils.IDUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +46,9 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         tv_version = view.findViewById(R.id.tv_version);
-        tv_version.setText("当前版本：\n" + IDUtils.getVersion(getActivity()) + "\n"
-                + "IMEI:" + IDUtils.getIMEI(getActivity()) + "\n"
-                + "MYID:" + IDUtils.getAndroidID(getActivity()) + "\n"
+        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n"
+                + "IMEI:" + IDUtil.getIMEI(getActivity()) + "\n"
+                + "MYID:" + IDUtil.getAndroidID(getActivity()) + "\n"
         );
 
         listView = view.findViewById(R.id.fm_file_lv01);
@@ -56,8 +56,8 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
         listView.setAdapter(mAdapter);
 
         apiAction = new ApiActionlmpl();
-        apiAction.getAllVersion(IDUtils.getModel(getActivity()), IDUtils.getVersion(getActivity()), IDUtils.getIMEI(getActivity()),
-                IDUtils.getSnUid(getActivity()), IDUtils.getAndroidID(getActivity()),new Observer<RetAllVersion>() {
+        apiAction.getAllVersion(IDUtil.getModel(getActivity()), IDUtil.getVersion(getActivity()), IDUtil.getIMEI(getActivity()),
+                IDUtil.getSnUid(getActivity()), IDUtil.getAndroidID(getActivity()),new Observer<RetAllVersion>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 

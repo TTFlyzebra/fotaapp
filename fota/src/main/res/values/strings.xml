@@ -11,4 +11,8 @@
     <string name="main">主页</string>
     <string name="exit">退出</string>
     <string name="settings">设置</string>
+    <string name="upok_model">升级完成后是否重启</string>
+    <string name="upok_dialog">弹提示框</string>
+    <string name="upok_restart">自动重启</string>
+    <string name="upok_normol">静默无操作</string>
 </resources>

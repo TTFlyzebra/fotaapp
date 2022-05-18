@@ -4,33 +4,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="4dp"
-    android:background="#4F0000FF"
-    android:gravity="center"
+    android:background="#000000"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="@string/ota_url"
-        android:textColor="@color/white" />
+        android:layout_margin="1dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_otaurl"
-        android:background="@color/white"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:text="@string/upok_model"
+            android:textColor="@color/fm_set_text_color"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/fm_set_rg01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
+
+            <RadioButton
+                android:id="@+id/fm_set_rb01"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/set_crd"
+                android:checked="true"
+                android:text="@string/upok_dialog"
+                android:textColor="@color/fm_set_text_color"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/fm_set_rb02"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/set_crd"
+                android:text="@string/upok_restart"
+                android:textColor="@color/fm_set_text_color"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/fm_set_rb03"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/set_crd"
+                android:checked="false"
+                android:text="@string/upok_normol"
+                android:textColor="@color/fm_set_text_color"
+                android:textSize="14sp" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:autofillHints="" />
+        android:src="@drawable/set_line_01" />
 
-    <Button
-        android:id="@+id/bt_save"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save_set"/>
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/ota_url"
+            android:textColor="@color/fm_set_text_color" />
+
+        <EditText
+            android:id="@+id/fm_set_et01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="http://www.f-zebra.com/zebra"
+            android:background="@color/white"
+            android:textColor="@color/black" />
+    </LinearLayout>
 
 </LinearLayout>

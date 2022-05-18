@@ -22,8 +22,8 @@ import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FileUtils;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.IDUtils;
-import com.flyzebra.utils.SPUtils;
+import com.flyzebra.utils.IDUtil;
+import com.flyzebra.utils.SPUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -124,8 +124,8 @@ public class Flyup implements IFlyup, OsEvent {
         if (apiAction == null) {
             apiAction = new ApiActionlmpl();
         }
-        apiAction.getUpVersion(IDUtils.getModel(mContext), IDUtils.getVersion(mContext), IDUtils.getIMEI(mContext),
-                IDUtils.getSnUid(mContext), IDUtils.getAndroidID(mContext), new Observer<RetVersion>() {
+        apiAction.getUpVersion(IDUtil.getModel(mContext), IDUtil.getVersion(mContext), IDUtil.getIMEI(mContext),
+                IDUtil.getSnUid(mContext), IDUtil.getAndroidID(mContext), new Observer<RetVersion>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
@@ -135,8 +135,8 @@ public class Flyup implements IFlyup, OsEvent {
                         mOtaPackage = resultVersion.data;
                         if (isFirst.get()) {
                             if (resultVersion.code == 0 || resultVersion.code == 1) {
-                                SPUtils.set(mContext, "PHONE_ID", mOtaPackage.phoneId);
-                                apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1), CODE_00,
+                                SPUtil.set(mContext, "PHONE_ID", mOtaPackage.phoneId);
+                                apiAction.upPhoneLog((int) SPUtil.get(mContext, "PHONE_ID", -1), CODE_00,
                                         "系统首次启动!", (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
                                             @Override
                                             public void onSubscribe(Disposable d) {
@@ -406,7 +406,7 @@ public class Flyup implements IFlyup, OsEvent {
             return;
         }
 
-        apiAction.upPhoneLog((int) SPUtils.get(mContext, "PHONE_ID", -1),
+        apiAction.upPhoneLog((int) SPUtil.get(mContext, "PHONE_ID", -1),
                 event, emsg, (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
                     @Override
                     public void onSubscribe(Disposable d) {

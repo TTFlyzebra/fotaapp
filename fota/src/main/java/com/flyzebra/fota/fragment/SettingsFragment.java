@@ -4,22 +4,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.flyzebra.fota.R;
-import com.flyzebra.fota.config.HttpApi;
-import com.flyzebra.utils.SystemPropUtils;
-
-import static com.flyzebra.fota.config.HttpApi.PROP_API_BASE_URL;
+import com.flyzebra.fota.config.Config;
+import com.flyzebra.utils.PropUtil;
+import com.flyzebra.utils.SPUtil;
 
 public class SettingsFragment extends Fragment {
-
-    private Button bt_save;
-    private EditText et_otaurl;
+    private RadioGroup rg01;
+    private RadioButton rb01, rb02, rb03;
+    private EditText et01;
 
     @Nullable
     @Override
@@ -29,16 +30,58 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        bt_save = view.findViewById(R.id.bt_save);
-        et_otaurl = view.findViewById(R.id.et_otaurl);
+        rg01 = view.findViewById(R.id.fm_set_rg01);
+        rb01 = view.findViewById(R.id.fm_set_rb01);
+        rb02 = view.findViewById(R.id.fm_set_rb02);
+        rb03 = view.findViewById(R.id.fm_set_rb03);
+        et01 = view.findViewById(R.id.fm_set_et01);
 
-        et_otaurl.setText(SystemPropUtils.get(PROP_API_BASE_URL, HttpApi.API_BASE_URL));
+        String upok_model =  (String) SPUtil.get(getActivity(), Config.UPOK_MODEL,Config.UPOK_MODEL_DIALOG);
+        if(upok_model.equals(Config.UPOK_MODEL_DIALOG)){
+            rb01.setChecked(true);
+            rb02.setChecked(false);
+            rb03.setChecked(false);
+        }else if(upok_model.equals(Config.UPOK_MODEL_RESTART)){
+            rb01.setChecked(false);
+            rb02.setChecked(true);
+            rb03.setChecked(false);
+        }else {
+            rb01.setChecked(false);
+            rb02.setChecked(false);
+            rb03.setChecked(true);
+        }
 
-        bt_save.setOnClickListener(new View.OnClickListener() {
+        rb01.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                SystemPropUtils.set(PROP_API_BASE_URL, et_otaurl.getText().toString());
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_DIALOG);
+                }
             }
         });
+        rb02.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_RESTART);
+                }
+            }
+        });
+        rb03.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+                }
+            }
+        });
+
+        et01.setText(PropUtil.get(Config.PROP_API_BASE_URL, ""));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        PropUtil.set(Config.PROP_API_BASE_URL, et01.getText().toString());
     }
 }

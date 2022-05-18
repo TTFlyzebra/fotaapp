@@ -20,7 +20,7 @@ import android.text.TextUtils;
  * @createtime 2016-12-7下午2:06:03
  * @remarks
  */
-public class IDUtils {
+public class IDUtil {
     /**
      * 获取手机型号,兼容云手机
      *
@@ -28,7 +28,7 @@ public class IDUtils {
      * @return
      */
     public static String getModel(Context context) {
-        return SystemPropUtils.get("ro.product.model", "CM3003").toUpperCase();
+        return PropUtil.get("ro.product.model", "CM3003").toUpperCase();
     }
 
     /**
@@ -38,15 +38,15 @@ public class IDUtils {
      * @return
      */
     public static String getVersion(Context context) {
-        String version = SystemPropUtils.get("persist.vendor.display.id", "");
+        String version = PropUtil.get("persist.vendor.display.id", "");
         if (TextUtils.isEmpty(version)) {
-            version = SystemPropUtils.get("ro.build.display.id", "");
+            version = PropUtil.get("ro.build.display.id", "");
         }
         return version.toUpperCase();
     }
 
     public static String getSnUid(Context context) {
-        String snuid = SystemPropUtils.get("ro.serialno", "");
+        String snuid = PropUtil.get("ro.serialno", "");
         return snuid.toUpperCase();
     }
 

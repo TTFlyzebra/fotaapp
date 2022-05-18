@@ -1,5 +1,6 @@
 package com.flyzebra.fota;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +9,16 @@ import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.SystemProperties;
 
+import com.flyzebra.fota.config.Config;
 import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.SPUtil;
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -55,6 +60,23 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
         super.onDestroy();
+    }
+
+    private void upokDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainService.this);
+        builder.setTitle("升级完成，现在就重启系统！");
+        builder.setPositiveButton("确定",
+                (dialog, which) -> {
+                    //SystemProperties.set("sys.powerctl", "reboot");
+                    Intent reboot = new Intent(Intent.ACTION_REBOOT);
+                    reboot.putExtra("nowait", 1);
+                    reboot.putExtra("interval", 1);
+                    reboot.putExtra("window", 0);
+                    sendBroadcast(reboot);
+                    dialog.dismiss();
+                });
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private boolean isConnect(){
@@ -129,6 +151,17 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             //系统升级完成，需要重启系统才能生效！
             case CODE_12:
                 notificationView.show(code, progress, msg);
+                String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                if(upok_model.equals(Config.UPOK_MODEL_RESTART)) {
+                    if(pm.isInteractive()){
+                        upokDialog();
+                    }else{
+                        SystemProperties.set("sys.powerctl", "reboot");
+                    }
+                }else if(upok_model.equals(Config.UPOK_MODEL_DIALOG)) {
+                    upokDialog();
+                }
                 break;
             //系统正在更新
             case CODE_91:

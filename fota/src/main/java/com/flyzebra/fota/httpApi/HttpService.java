@@ -1,8 +1,8 @@
 package com.flyzebra.fota.httpApi;
 
-import com.flyzebra.fota.config.HttpApi;
+import com.flyzebra.fota.config.Config;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.SystemPropUtils;
+import com.flyzebra.utils.PropUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +18,7 @@ public class HttpService {
     private static boolean isWork = false;
 
     public HttpService() {
-        String serverUrl = SystemPropUtils.get(HttpApi.PROP_API_BASE_URL, HttpApi.API_BASE_URL);
+        String serverUrl = PropUtil.get(Config.PROP_API_BASE_URL, Config.API_BASE_URL);
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         try {

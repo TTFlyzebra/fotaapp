@@ -139,17 +139,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_main:
-                if (!(mFragment instanceof MainFragment))
-                    replaceFragMent(new MainFragment());
-                break;
+//            case R.id.action_main:
+//                if (!(mFragment instanceof MainFragment))
+//                    replaceFragMent(new MainFragment());
+//                break;
             case R.id.action_settings:
                 if (!(mFragment instanceof SettingsFragment))
                     replaceFragMent(new SettingsFragment());
                 break;
-            case R.id.action_exit:
-                onBackPressed();
-                break;
+//            case R.id.action_exit:
+//                onBackPressed();
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -9,11 +9,11 @@ import java.lang.reflect.Method;
  * Email:flycnzebra@gmail.com
  * Date: 19-12-11 上午10:37
  */
-public class SystemPropUtils {
+public class PropUtil {
     private static Method propGet;
     private static Method propSet;
 
-    private SystemPropUtils() {
+    private PropUtil() {
     }
 
     static {

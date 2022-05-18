@@ -19,7 +19,7 @@ import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
-import com.flyzebra.utils.IDUtils;
+import com.flyzebra.utils.IDUtil;
 
 import java.util.Objects;
 
@@ -46,9 +46,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
         bt_updater = view.findViewById(R.id.bt_updater);
         bt_updater.setOnClickListener(this);
         progressBar.setMax(100);
-        tv_version.setText("当前版本：\n" + IDUtils.getVersion(getActivity()) + "\n"
-                + "IMEI:" + IDUtils.getIMEI(getActivity()) + "\n"
-                + "MYID:" + IDUtils.getAndroidID(getActivity()) + "\n"
+        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n"
+                + "IMEI:" + IDUtil.getIMEI(getActivity()) + "\n"
+                + "MYID:" + IDUtil.getAndroidID(getActivity()) + "\n"
         );
 
         upVersionInfo();

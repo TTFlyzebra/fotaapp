@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class MacUtils {
+public class MacUtil {
     /**
      * 需要权限
      * <uses-permission android:name="android.permission.INTERNET"/>
