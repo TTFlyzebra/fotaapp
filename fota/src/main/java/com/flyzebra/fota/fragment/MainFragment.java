@@ -1,8 +1,8 @@
 package com.flyzebra.fota.fragment;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +20,6 @@ import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtil;
-
-import java.util.Objects;
 
 public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, OsEvent {
 
@@ -173,12 +171,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                     builder.setTitle("确定要现在重启系统！");
                     builder.setPositiveButton("确定",
                             (dialog, which) -> {
-                                //SystemProperties.set("sys.powerctl", "reboot");
-                                Intent reboot = new Intent(Intent.ACTION_REBOOT);
-                                reboot.putExtra("nowait", 1);
-                                reboot.putExtra("interval", 1);
-                                reboot.putExtra("window", 0);
-                                Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
+                                SystemProperties.set("sys.powerctl", "reboot");
+                                //Intent reboot = new Intent(Intent.ACTION_REBOOT);
+                                //reboot.putExtra("nowait", 1);
+                                //reboot.putExtra("interval", 1);
+                                //reboot.putExtra("window", 0);
+                                //Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
                                 dialog.dismiss();
                             });
                     builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
