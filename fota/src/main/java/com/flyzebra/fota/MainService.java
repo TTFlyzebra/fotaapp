@@ -35,7 +35,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void onCreate() {
         super.onCreate();
-        FlyLog.d("++++F-ZEBRA OTA 1.05--2022.05.08++++");
+        FlyLog.d("++++F-ZEBRA OTA 1.06--2022.05.08++++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
         startCheckUpVersion(0);

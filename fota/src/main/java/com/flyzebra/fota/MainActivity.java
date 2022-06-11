@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
             initRect();
             int x = (int) ev.getX();
             int y = (int) ev.getY();
-            FlyLog.d(rect[passWords1[passWordCount1]].toString());
             if (rect[passWords1[passWordCount1]].contains(x, y)) {
                 passWordCount1++;
             } else {
