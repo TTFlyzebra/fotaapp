@@ -1,7 +1,5 @@
 package com.flyzebra.fota.httpApi;
 
-import android.os.SystemClock;
-
 import com.flyzebra.fota.bean.RetAllVersion;
 import com.flyzebra.fota.bean.RetPhoneLog;
 import com.flyzebra.fota.bean.RetVersion;
@@ -20,8 +18,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void getUpVersion(String sid, String ver, String imei, String uid, String aid, Observer<RetVersion> observer) {
-        mNetService.getUpVersion(sid, ver, imei, uid, aid)
+    public void getUpVersion(String sid, String ver, String imei, String uid, Observer<RetVersion> observer) {
+        mNetService.getUpVersion(sid, ver, imei, uid)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -29,8 +27,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void getAllVersion(String sid, String ver, String imei, String uid, String aid, Observer<RetAllVersion> observer) {
-        mNetService.getAllVersion(sid, ver, imei, uid, aid)
+    public void getAllVersion(String sid, String ver, String imei, String uid, Observer<RetAllVersion> observer) {
+        mNetService.getAllVersion(sid, ver, imei, uid)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -38,8 +36,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void upPhoneLog(int phoneId, int event, String emsg, int phonetime, Observer<RetPhoneLog> observer) {
-        mNetService.upPhoneLog(phoneId, event, emsg, (int) SystemClock.elapsedRealtime() / 1000)
+    public void upPhoneLog(int phoneId, int event, String emsg, Observer<RetPhoneLog> observer) {
+        mNetService.upPhoneLog(phoneId, event, emsg)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

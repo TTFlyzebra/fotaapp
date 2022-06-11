@@ -12,16 +12,16 @@ import retrofit2.http.POST;
 
 public interface Api {
 
-    @POST("fotaapi/version")
+    @POST("termapi/version")
     @FormUrlEncoded
-    Observable<RetVersion> getUpVersion(@Field("sid") String sid, @Field("ver") String ver, @Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
+    Observable<RetVersion> getUpVersion(@Field("sid") String sid, @Field("ver") String ver, @Field("imei") String imei, @Field("uid") String uid);
 
-    @POST("fotaapi/version/all")
+    @POST("termapi/version/all")
     @FormUrlEncoded
-    Observable<RetAllVersion> getAllVersion(@Field("sid") String sid, @Field("ver") String ver,@Field("imei") String imei, @Field("uid") String uid, @Field("aid") String aid);
+    Observable<RetAllVersion> getAllVersion(@Field("sid") String sid, @Field("ver") String ver,@Field("imei") String imei, @Field("uid") String uid);
 
-    @POST("fotaapi/phonelog")
+    @POST("termapi/phonelog")
     @FormUrlEncoded
-    Observable<RetPhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg,  @Field("phonetime") int phonetime);
+    Observable<RetPhoneLog> upPhoneLog(@Field("phoneId") int phoneId, @Field("event") int event, @Field("emsg") String emsg);
 
 }

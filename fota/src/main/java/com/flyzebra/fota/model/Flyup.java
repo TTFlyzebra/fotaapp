@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.os.UpdateEngine;
 import android.os.UpdateEngineCallback;
 import android.text.TextUtils;
@@ -124,71 +123,52 @@ public class Flyup implements IFlyup, OsEvent {
         if (apiAction == null) {
             apiAction = new ApiActionlmpl();
         }
-        apiAction.getUpVersion(IDUtil.getModel(mContext), IDUtil.getVersion(mContext), IDUtil.getIMEI(mContext),
-                IDUtil.getSnUid(mContext), IDUtil.getAndroidID(mContext), new Observer<RetVersion>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        apiAction.getUpVersion(
+            IDUtil.getModel(mContext),
+            IDUtil.getVersion(mContext),
+            IDUtil.getIMEI(mContext),
+            IDUtil.getSnUid(mContext),
+            new Observer<RetVersion>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(@NonNull RetVersion resultVersion) {
-                        mOtaPackage = resultVersion.data;
-                        if (isFirst.get()) {
-                            if (resultVersion.code == 0 || resultVersion.code == 1) {
-                                SPUtil.set(mContext, "PHONE_ID", mOtaPackage.phoneId);
-                                apiAction.upPhoneLog((int) SPUtil.get(mContext, "PHONE_ID", -1), CODE_00,
-                                        "系统首次启动!", (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-                                            }
+                }
 
-                                            @Override
-                                            public void onNext(RetPhoneLog phoneLog) {
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                FlyLog.e("upPhoneLog onError!" + e);
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-                                                isFirst.set(false);
-                                            }
-                                        });
-                            }
-                        }
-                        FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
-                        if (resultVersion.code == 0) {
-                            FlyDown.delOtherFile(mOtaPackage.md5sum);
-                            notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "...");
-                            isRunning.set(false);
-                            if (mOtaPackage.upType == 1) {
-                                updaterOtaPackage(mOtaPackage);
-                            } else {
-                                notifyListener(CODE_92, 0, "需要手动更新版本！");
-                            }
-                        } else if (resultVersion.code == 1) {
-                            isRunning.set(false);
-                            FlyDown.delAllDownFile();
-                            notifyListener(CODE_01, 100, "已更新到最新版本！");
-                        } else {
-                            isRunning.set(false);
-                            notifyListener(CODE_03, 100, "获取最新版本失败！");
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        FlyLog.e(e.toString());
-                        notifyListener(CODE_04, 100, "获取最新版本失败，网络错误！");
+                @Override
+                public void onNext(@NonNull RetVersion resultVersion) {
+                    mOtaPackage = resultVersion.data;
+                    if (isFirst.get()) upPhoneLog(CODE_00,"系统首次启动!");
+                    FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
+                    if (resultVersion.code == 0) {
+                        FlyDown.delOtherFile(mOtaPackage.md5sum);
+                        notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "...");
                         isRunning.set(false);
+                        if (mOtaPackage.upType == 1) {
+                            updaterOtaPackage(mOtaPackage);
+                        } else {
+                            notifyListener(CODE_92, 0, "需要手动更新版本！");
+                        }
+                    } else if (resultVersion.code == 1) {
+                        isRunning.set(false);
+                        FlyDown.delAllDownFile();
+                        notifyListener(CODE_01, 100, "已更新到最新版本！");
+                    } else {
+                        isRunning.set(false);
+                        notifyListener(CODE_03, 100, "获取最新版本失败！");
                     }
+                }
 
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+                @Override
+                public void onError(Throwable e) {
+                    FlyLog.e(e.toString());
+                    notifyListener(CODE_04, 1, "正在尝试连接服务器...");
+                    isRunning.set(false);
+                }
+
+                @Override
+                public void onComplete() {
+                }
+            });
     }
 
     @Override
@@ -401,31 +381,29 @@ public class Flyup implements IFlyup, OsEvent {
     }
 
     public void upPhoneLog(int event, String emsg) {
-        if (mOtaPackage == null) {
-//            FlyLog.e("no phoneId for upPhoneLog!");
-            return;
-        }
+        if (mOtaPackage == null) return;
+        apiAction.upPhoneLog(
+            (int) SPUtil.get(mContext, "PHONE_ID", -1), event, emsg,
+            new Observer<RetPhoneLog>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                }
 
-        apiAction.upPhoneLog((int) SPUtil.get(mContext, "PHONE_ID", -1),
-                event, emsg, (int) (SystemClock.elapsedRealtime() / 1000), new Observer<RetPhoneLog>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+                @Override
+                public void onNext(RetPhoneLog phoneLog) {
+                    //FlyLog.d("onNext [%s]", phoneLog.toString());
+                }
 
-                    @Override
-                    public void onNext(RetPhoneLog phoneLog) {
-//                        FlyLog.d("onNext [%s]", phoneLog.toString());
-                    }
+                @Override
+                public void onError(Throwable e) {
+                    FlyLog.e("upPhoneLog onError!" + e);
+                }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        FlyLog.e("upPhoneLog onError!" + e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    isFirst.set(false);
+                }
+            });
     }
 
     private static class FlyUpdateHolder {

@@ -15,7 +15,7 @@ public class FileIO implements IFileIO {
 	private RandomAccessFile mRandomAccessFile;
 
 	public FileIO(String fileName) throws IOException {
-		mRandomAccessFile = new RandomAccessFile(fileName, "rwd");
+		mRandomAccessFile = new RandomAccessFile(fileName, "rws");
 	}
 
 	@Override

@@ -96,7 +96,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
             //获取最新版本失败，网络错误！
             case CODE_04:
                 bt_updater.setText(R.string.check_system);
-                tv_upinfo.setText("");
                 bt_updater.setEnabled(true);
                 break;
             //正在下载升级包...

@@ -57,7 +57,7 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
 
         apiAction = new ApiActionlmpl();
         apiAction.getAllVersion(IDUtil.getModel(getActivity()), IDUtil.getVersion(getActivity()), IDUtil.getIMEI(getActivity()),
-                IDUtil.getSnUid(getActivity()), IDUtil.getAndroidID(getActivity()),new Observer<RetAllVersion>() {
+                IDUtil.getSnUid(getActivity()), new Observer<RetAllVersion>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 

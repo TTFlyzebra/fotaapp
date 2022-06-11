@@ -15,7 +15,7 @@ public class OtaPackage {
     @Override
     public String toString() {
         return "{" +
-                "\"phoneId\":" + phoneId +
+                " \"phoneId\":" + phoneId +
                 ", \"version\":\"" + version + '\"' +
                 ", \"downurl\":\"" + downurl + '\"' +
                 ", \"filesize\":" + filesize +
