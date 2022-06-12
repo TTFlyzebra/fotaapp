@@ -5,7 +5,7 @@ public class OtaPackage {
     public String version;
     public String downurl;
     public int filesize;
-    public String md5sum;
+    public String filemd5;
     public String oldver;
     public int upType;
     public int otaType;
@@ -19,7 +19,7 @@ public class OtaPackage {
                 ", \"version\":\"" + version + '\"' +
                 ", \"downurl\":\"" + downurl + '\"' +
                 ", \"filesize\":" + filesize +
-                ", \"md5sum\":\"" + md5sum + '\"' +
+                ", \"md5sum\":\"" + filemd5 + '\"' +
                 ", \"oldver\":\"" + oldver + '\"' +
                 ", \"upType\":" + upType +
                 ", \"otaType\":" + otaType +

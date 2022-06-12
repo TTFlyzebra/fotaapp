@@ -140,7 +140,7 @@ public class Flyup implements IFlyup, OsEvent {
                     if (isFirst.get()) upPhoneLog(CODE_00,"系统首次启动!");
                     FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
                     if (resultVersion.code == 0) {
-                        FlyDown.delOtherFile(mOtaPackage.md5sum);
+                        FlyDown.delOtherFile(mOtaPackage.filemd5);
                         notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "...");
                         isRunning.set(false);
                         if (mOtaPackage.upType == 1) {
@@ -178,11 +178,11 @@ public class Flyup implements IFlyup, OsEvent {
         if (mOtaPackage == null
                 || TextUtils.isEmpty(mOtaPackage.downurl)
                 || TextUtils.isEmpty(mOtaPackage.version)
-                || TextUtils.isEmpty(mOtaPackage.md5sum)) {
+                || TextUtils.isEmpty(mOtaPackage.filemd5)) {
             updateNewVersion();
         } else {
             isRunning.set(true);
-            if (FlyDown.isFileDownFinish(otaPackage.md5sum)) {
+            if (FlyDown.isFileDownFinish(otaPackage.filemd5)) {
                 verityFileMd5(mOtaPackage);
             } else {
                 downloadFile(mOtaPackage);
@@ -231,7 +231,7 @@ public class Flyup implements IFlyup, OsEvent {
                 notifyListener(CODE_05, Math.max(progress, 1), "正在下载升级包...");
             }
         };
-        FlyDown.load(otaPackage.downurl).setThread(1).setFileName(otaPackage.md5sum).listener(listener).start();
+        FlyDown.load(otaPackage.downurl).setThread(1).setFileName(otaPackage.filemd5).listener(listener).start();
     }
 
     @Override
@@ -240,15 +240,15 @@ public class Flyup implements IFlyup, OsEvent {
         tHandler.post(new Runnable() {
             @Override
             public void run() {
-                String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.md5sum));
-                if (md5sum.equals(otaPackage.md5sum)) {
+                String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.filemd5));
+                if (md5sum.equals(otaPackage.filemd5)) {
                     notifyListener(CODE_07, 100, "升级包MD5值校验成功...");
-                    final File file = new File(FlyDown.getFilePath(otaPackage.md5sum));
+                    final File file = new File(FlyDown.getFilePath(otaPackage.filemd5));
                     updaterFile(file);
                 } else {
                     FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
                     isRunning.set(false);
-                    FlyDown.delDownFile(otaPackage.md5sum);
+                    FlyDown.delDownFile(otaPackage.filemd5);
                     notifyListener(CODE_08, 100, "升级包MD5值校验错误！");
                 }
             }
