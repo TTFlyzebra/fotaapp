@@ -168,11 +168,5 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 startCheckUpVersion(CHECK_TIME);
                 break;
         }
-        if ((progress == 0 || progress == 100) &&
-                code != CODE_11 &&
-                code != CODE_00 &&
-                code != CODE_91) {
-            Flyup.getInstance().upPhoneLog(code, msg);
-        }
     }
 }

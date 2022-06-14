@@ -36,8 +36,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void upPhoneLog(int phoneId, int event, String emsg, Observer<RetPhoneLog> observer) {
-        mNetService.upPhoneLog(phoneId, event, emsg)
+    public void upPhoneLog(String imei, int event, String emsg, Observer<RetPhoneLog> observer) {
+        mNetService.upPhoneLog(imei, event, emsg)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
