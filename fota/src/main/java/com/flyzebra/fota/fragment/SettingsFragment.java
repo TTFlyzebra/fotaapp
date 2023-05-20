@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -19,7 +18,7 @@ import com.flyzebra.utils.SPUtil;
 
 public class SettingsFragment extends Fragment {
     private RadioGroup rg01;
-    private RadioButton rb01, rb02, rb03;
+    private RadioButton rb01, rb02;
     private EditText et01;
 
     @Nullable
@@ -33,46 +32,25 @@ public class SettingsFragment extends Fragment {
         rg01 = view.findViewById(R.id.fm_set_rg01);
         rb01 = view.findViewById(R.id.fm_set_rb01);
         rb02 = view.findViewById(R.id.fm_set_rb02);
-        rb03 = view.findViewById(R.id.fm_set_rb03);
         et01 = view.findViewById(R.id.fm_set_et01);
 
-        String upok_model =  (String) SPUtil.get(getActivity(), Config.UPOK_MODEL,Config.UPOK_MODEL_DIALOG);
-        if(upok_model.equals(Config.UPOK_MODEL_DIALOG)){
-            rb01.setChecked(true);
-            rb02.setChecked(false);
-            rb03.setChecked(false);
-        }else if(upok_model.equals(Config.UPOK_MODEL_RESTART)){
+        String upok_model =  (String) SPUtil.get(getActivity(), Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+        if(upok_model.equals(Config.UPOK_MODEL_NORMAL)){
             rb01.setChecked(false);
             rb02.setChecked(true);
-            rb03.setChecked(false);
         }else {
-            rb01.setChecked(false);
+            rb01.setChecked(true);
             rb02.setChecked(false);
-            rb03.setChecked(true);
         }
 
-        rb01.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_DIALOG);
-                }
+        rb01.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_RESTART);
             }
         });
-        rb02.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_RESTART);
-                }
-            }
-        });
-        rb03.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
-                }
+        rb02.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
             }
         });
 

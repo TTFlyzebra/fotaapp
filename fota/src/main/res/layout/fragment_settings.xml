@@ -37,8 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:button="@drawable/set_crd"
-                android:checked="true"
-                android:text="@string/upok_dialog"
+                android:checked="false"
+                android:text="@string/upok_restart"
                 android:textColor="@color/fm_set_text_color"
                 android:textSize="14sp" />
 
@@ -48,17 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:button="@drawable/set_crd"
-                android:text="@string/upok_restart"
-                android:textColor="@color/fm_set_text_color"
-                android:textSize="14sp" />
-
-            <RadioButton
-                android:id="@+id/fm_set_rb03"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:button="@drawable/set_crd"
-                android:checked="false"
+                android:checked="true"
                 android:text="@string/upok_normol"
                 android:textColor="@color/fm_set_text_color"
                 android:textSize="14sp" />

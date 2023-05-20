@@ -1,6 +1,5 @@
 package com.flyzebra.fota;
 
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -56,23 +55,6 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
         super.onDestroy();
-    }
-
-    private void upokDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainService.this);
-        builder.setTitle("升级完成，现在就重启系统！");
-        builder.setPositiveButton("确定",
-                (dialog, which) -> {
-                    //SystemProperties.set("sys.powerctl", "reboot");
-                    Intent reboot = new Intent(Intent.ACTION_REBOOT);
-                    reboot.putExtra("nowait", 1);
-                    reboot.putExtra("interval", 1);
-                    reboot.putExtra("window", 0);
-                    sendBroadcast(reboot);
-                    dialog.dismiss();
-                });
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
-        builder.show();
     }
 
     private boolean isConnect(){
@@ -150,13 +132,9 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 if(upok_model.equals(Config.UPOK_MODEL_RESTART)) {
-                    if(pm.isInteractive()){
-                        upokDialog();
-                    }else{
+                    if(!pm.isInteractive()){
                         SystemProperties.set("sys.powerctl", "reboot");
                     }
-                }else if(upok_model.equals(Config.UPOK_MODEL_DIALOG)) {
-                    upokDialog();
                 }
                 break;
             //系统正在更新

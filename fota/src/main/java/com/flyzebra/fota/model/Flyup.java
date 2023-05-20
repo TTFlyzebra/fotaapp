@@ -353,13 +353,17 @@ public class Flyup implements IFlyup, FlyEvent {
                 isRunning.set(false);
                 notifyListener(CODE_10, 100, "升级文件校验失败！");
             }
-            mUpdateEngine.unbind();
-            mUpdateEngine.bind(callback);
-            mUpdateEngine.applyPayload(
-                    FILE_URL_PREFIX + file.getAbsolutePath(),
-                    payloadOffset,
-                    payloadSize,
-                    props);
+            try {
+                mUpdateEngine.unbind();
+                mUpdateEngine.bind(callback);
+                mUpdateEngine.applyPayload(
+                        FILE_URL_PREFIX + file.getAbsolutePath(),
+                        payloadOffset,
+                        payloadSize,
+                        props);
+            }catch (Exception e){
+                FlyLog.e(e.toString());
+            }
         });
     }
 
