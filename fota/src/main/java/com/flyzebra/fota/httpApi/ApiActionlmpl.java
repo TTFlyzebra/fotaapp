@@ -1,7 +1,6 @@
 package com.flyzebra.fota.httpApi;
 
 import com.flyzebra.fota.bean.RetAllVersion;
-import com.flyzebra.fota.bean.RetPhoneLog;
 import com.flyzebra.fota.bean.RetVersion;
 
 import io.reactivex.Observer;
@@ -18,8 +17,8 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void getUpVersion(String sid, String ver, String imei, String uid, Observer<RetVersion> observer) {
-        mNetService.getUpVersion(sid, ver, imei, uid)
+    public void getUpVersion(String model, String ver, String imei, Observer<RetVersion> observer) {
+        mNetService.getUpVersion(model, ver, imei)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -27,20 +26,12 @@ public class ApiActionlmpl implements ApiAction {
     }
 
     @Override
-    public void getAllVersion(String sid, String ver, String imei, String uid, Observer<RetAllVersion> observer) {
-        mNetService.getAllVersion(sid, ver, imei, uid)
+    public void getAllVersion(String model, String ver, String imei, Observer<RetAllVersion> observer) {
+        mNetService.getAllVersion(model, ver, imei)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
-    @Override
-    public void upPhoneLog(String imei, int event, String emsg, Observer<RetPhoneLog> observer) {
-        mNetService.upPhoneLog(imei, event, emsg)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
 }

@@ -94,12 +94,6 @@ public interface IFlyup {
     String  getLastMessage();
 
     /**
-     * 更新服务器日志信息
-     * @param event
-     * @param emsg
-     */
-    void upPhoneLog(int event, String emsg);
-    /**
      * 注册状态监听
      * @param flyupResult
      */

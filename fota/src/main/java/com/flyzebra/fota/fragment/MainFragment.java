@@ -44,10 +44,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
         bt_updater = view.findViewById(R.id.bt_updater);
         bt_updater.setOnClickListener(this);
         progressBar.setMax(100);
-        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n"
-                + "IMEI:" + IDUtil.getIMEI(getActivity()) + "\n"
-                + "MYID:" + IDUtil.getAndroidID(getActivity()) + "\n"
-        );
+        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n");
 
         upVersionInfo();
         Flyup.getInstance().addListener(this);
@@ -167,7 +164,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                     Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("确定要现在重启系统！");
+                    builder.setTitle("系统升级完成，请重启系统！");
                     builder.setPositiveButton("确定",
                             (dialog, which) -> {
                                 SystemProperties.set("sys.powerctl", "reboot");
