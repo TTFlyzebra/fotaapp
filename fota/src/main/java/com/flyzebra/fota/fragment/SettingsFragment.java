@@ -12,8 +12,8 @@ import android.widget.RadioGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.flyzebra.fota.Config;
 import com.flyzebra.fota.R;
-import com.flyzebra.fota.config.Config;
 import com.flyzebra.utils.PropUtil;
 import com.flyzebra.utils.SPUtil;
 

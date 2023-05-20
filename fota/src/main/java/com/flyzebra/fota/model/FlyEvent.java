@@ -1,6 +1,6 @@
-package com.flyzebra.fota.config;
+package com.flyzebra.fota.model;
 
-public interface OsEvent {
+public interface FlyEvent {
 
     //系统首次启动...
     int CODE_00 = 0;

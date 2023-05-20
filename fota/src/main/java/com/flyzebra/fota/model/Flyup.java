@@ -16,7 +16,6 @@ import com.flyzebra.flydown.request.IFileReQuestListener;
 import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.bean.RetPhoneLog;
 import com.flyzebra.fota.bean.RetVersion;
-import com.flyzebra.fota.config.OsEvent;
 import com.flyzebra.fota.httpApi.ApiAction;
 import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FileUtils;
@@ -42,7 +41,7 @@ import io.reactivex.disposables.Disposable;
 //uncrypt /data/update.zip /cache/recovery/block.map
 //echo  "--update_package=@/cache/recovery/block.map"  > /cache/recovery/command
 //reboot recovery
-public class Flyup implements IFlyup, OsEvent {
+public class Flyup implements IFlyup, FlyEvent {
 
     private static final HandlerThread mTaskThread = new HandlerThread("fota_thread");
 

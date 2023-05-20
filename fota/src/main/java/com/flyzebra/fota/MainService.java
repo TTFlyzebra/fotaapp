@@ -12,15 +12,14 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemProperties;
 
-import com.flyzebra.fota.config.Config;
-import com.flyzebra.fota.config.OsEvent;
+import com.flyzebra.fota.model.FlyEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
 import com.flyzebra.utils.SPUtil;
 
-public class MainService extends Service implements Runnable, IFlyup.FlyupResult, OsEvent {
+public class MainService extends Service implements Runnable, IFlyup.FlyupResult, FlyEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final long CHECK_TIME = 24 * 60 * 60 * 1000;
     private static final long MIN_TIME = 4 * 60 * 60 * 1000;

@@ -16,12 +16,12 @@ import androidx.fragment.app.Fragment;
 
 import com.flyzebra.fota.R;
 import com.flyzebra.fota.bean.OtaPackage;
-import com.flyzebra.fota.config.OsEvent;
+import com.flyzebra.fota.model.FlyEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtil;
 
-public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, OsEvent {
+public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, FlyEvent {
 
     private TextView tv_version, tv_verinfo, tv_upinfo;
     private ProgressBar progressBar;
