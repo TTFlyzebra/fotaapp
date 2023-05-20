@@ -33,8 +33,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
     private int fileSize;
 
     // 添加原子操作数判断下载是否完成
-    public SimpleFileReQuest(String downUrl) {
-        this.downUrl = downUrl;
+    public SimpleFileReQuest() {
     }
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -87,6 +86,8 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
             return;
         }
 
+        downUrl = downUrl.replace("https://", "http://");
+
         if (TextUtils.isEmpty(fileName)) {
             saveName = FlyDown.mCacheDir + "/" + downUrl.substring(downUrl.lastIndexOf('/') + 1, downUrl.length());
             tempFile = FlyDown.mCacheDir + "/" + "." + fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length()) + ".tmp";
@@ -109,7 +110,7 @@ public class SimpleFileReQuest implements Runnable, IFileReQuest, IFileBlockReQu
             for (int i = 0; i < threadNum; i++) {
                 iFileBlockQueue.doNextQueue();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             iFileReQuestListener.error(downUrl,1);
             FlyLog.e(e.toString());
         }

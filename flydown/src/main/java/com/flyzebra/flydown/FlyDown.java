@@ -24,7 +24,8 @@ public class FlyDown {
     }
 
     public static IFileReQuest load(String url) {
-        IFileReQuest fileQequest = new SimpleFileReQuest(url);
+        IFileReQuest fileQequest = new SimpleFileReQuest();
+        fileQequest.setUrl(url);
         downQuests.put(url, fileQequest);
         return fileQequest;
     }
