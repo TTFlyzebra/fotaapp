@@ -60,6 +60,10 @@ public class Flyup implements IFlyup, FlyEvent {
     @Override
     public void init(Context context) {
         FlyDown.mCacheDir = "/data/cache/recovery";
+        File file = new File(FlyDown.mCacheDir);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         mContext = context;
     }
 
@@ -128,12 +132,12 @@ public class Flyup implements IFlyup, FlyEvent {
                         FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
                         if (resultVersion.code == 0) {
                             FlyDown.delOtherFile(mOtaPackage.filemd5);
-                            notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "...");
+                            notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "……");
                             isRunning.set(false);
                             if (mOtaPackage.upType == 1) {
                                 updaterOtaPackage(mOtaPackage);
                             } else {
-                                notifyListener(CODE_92, 0, "需要手动更新...");
+                                notifyListener(CODE_92, 0, "需要手动更新……");
                             }
                         } else if (resultVersion.code == 1) {
                             isRunning.set(false);
@@ -141,14 +145,14 @@ public class Flyup implements IFlyup, FlyEvent {
                             notifyListener(CODE_01, 100, "已是最新版本！");
                         } else {
                             isRunning.set(false);
-                            notifyListener(CODE_03, 100, "获取版本失败...");
+                            notifyListener(CODE_03, 100, "获取版本失败……");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         FlyLog.e(e.toString());
-                        notifyListener(CODE_04, 1, "正在连接服务器...");
+                        notifyListener(CODE_04, 1, "正在连接服务器……");
                         isRunning.set(false);
                     }
 
@@ -196,23 +200,23 @@ public class Flyup implements IFlyup, FlyEvent {
 
     @Override
     public void downloadFile(final OtaPackage otaPackage) {
-        notifyListener(CODE_05, 0, "开始下载升级包...");
+        notifyListener(CODE_05, 0, "开始下载升级包……");
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
             public void error(String url, int ErrorCode) {
                 isRunning.set(false);
-                notifyListener(CODE_06, 100, "下载升级包失败...");
+                notifyListener(CODE_06, 100, "下载升级包失败……");
             }
 
             @Override
             public void finish(String saveName) {
-                notifyListener(CODE_05, 100, "升级包下载完成...");
+                notifyListener(CODE_05, 100, "升级包下载完成……");
                 verityFileMd5(otaPackage);
             }
 
             @Override
             public void progress(final int progress) {
-                notifyListener(CODE_05, Math.max(progress, 1), "正在下载升级包...");
+                notifyListener(CODE_05, Math.max(progress, 1), "正在下载升级包……");
             }
         };
         FlyDown.load(otaPackage.downurl).setThread(1).setFileName(otaPackage.filemd5).listener(listener).start();
@@ -220,18 +224,18 @@ public class Flyup implements IFlyup, FlyEvent {
 
     @Override
     public void verityFileMd5(OtaPackage otaPackage) {
-        notifyListener(CODE_07, 0, "开始校验升级包...");
+        notifyListener(CODE_07, 0, "开始校验升级包……");
         tHandler.post(() -> {
             String md5sum = FileUtils.getFileMD5(FlyDown.getFilePath(otaPackage.filemd5));
             if (md5sum.equals(otaPackage.filemd5)) {
-                notifyListener(CODE_07, 100, "升级包校验成功...");
+                notifyListener(CODE_07, 100, "升级包校验成功……");
                 final File file = new File(FlyDown.getFilePath(otaPackage.filemd5));
                 updaterFile(file);
             } else {
                 FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
                 isRunning.set(false);
                 FlyDown.delDownFile(otaPackage.filemd5);
-                notifyListener(CODE_08, 100, "升级包校验失败...");
+                notifyListener(CODE_08, 100, "升级包校验失败……");
             }
         });
     }
@@ -242,19 +246,19 @@ public class Flyup implements IFlyup, FlyEvent {
         public void onStatusUpdate(int i, float v) {
             switch (i) {
                 case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在检查系统...");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在检查系统……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在解压升级包...");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在复制文件……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.VERIFYING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在校验升级包...");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在校验文件……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.FINALIZING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在升级系统...");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在升级系统……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.ATTEMPTING_ROLLBACK:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在回滚系统...");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在回滚系统……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
                     isFinish.set(true);
@@ -266,7 +270,7 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
                 default:
                     isRunning.set(false);
-                    notifyListener(CODE_10, 100, "升级失败，重启系统后再试...");
+                    notifyListener(CODE_10, 100, "升级失败，重启系统后再试……");
                     break;
             }
 

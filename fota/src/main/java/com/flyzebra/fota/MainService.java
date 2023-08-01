@@ -30,7 +30,6 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onCreate() {
-        super.onCreate();
         FlyLog.d("++++F-ZEBRA OTA 1.06--2022.05.08++++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
@@ -48,10 +47,11 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onDestroy() {
+        notificationView.hide();
         mHandler.removeCallbacksAndMessages(null);
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
-        super.onDestroy();
+        FlyLog.d("MainActivity onDestroy");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
-        FlyLog.d("upVesionProgress: %d, %d, %s", code, progress, msg);
+        FlyLog.d("upVesionProgress[%d]: progress %d, %s", code, progress, msg);
         switch (code) {
             //已是最新版本
             case CODE_01:

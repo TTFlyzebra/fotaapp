@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,7 +16,6 @@ import com.flyzebra.utils.PropUtil;
 import com.flyzebra.utils.SPUtil;
 
 public class SettingsFragment extends Fragment {
-    private RadioGroup rg01;
     private RadioButton rb01, rb02;
     private EditText et01;
 
@@ -29,7 +27,6 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        rg01 = view.findViewById(R.id.fm_set_rg01);
         rb01 = view.findViewById(R.id.fm_set_rb01);
         rb02 = view.findViewById(R.id.fm_set_rb02);
         et01 = view.findViewById(R.id.fm_set_et01);

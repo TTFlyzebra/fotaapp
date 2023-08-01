@@ -174,26 +174,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_updater) {
-            if (!Flyup.getInstance().isRunning()) {
-                Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
+            if (Flyup.getInstance().isFinish()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("系统升级完成，请重启系统！");
+                builder.setPositiveButton("确定", (dialog, which) -> {
+                    PropUtil.set("sys.powerctl", "reboot");
+                    dialog.dismiss();
+                });
+                builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
+                builder.show();
             } else {
-                if (!Flyup.getInstance().isFinish()) {
-                    Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
+                if (!Flyup.getInstance().isRunning()) {
+                    Flyup.getInstance().updaterOtaPackage(Flyup.getInstance().getOtaPackage());
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("系统升级完成，请重启系统！");
-                    builder.setPositiveButton("确定",
-                            (dialog, which) -> {
-                                PropUtil.set("sys.powerctl", "reboot");
-                                //Intent reboot = new Intent(Intent.ACTION_REBOOT);
-                                //reboot.putExtra("nowait", 1);
-                                //reboot.putExtra("interval", 1);
-                                //reboot.putExtra("window", 0);
-                                //Objects.requireNonNull(getActivity()).sendBroadcast(reboot);
-                                dialog.dismiss();
-                            });
-                    builder.setNegativeButton("取消", (dialog, which) -> dialog.cancel());
-                    builder.show();
+                    Toast.makeText(getActivity(), "已有升级任务正在运行！", Toast.LENGTH_LONG).show();
                 }
             }
         }

@@ -21,6 +21,7 @@ import com.flyzebra.fota.fragment.FileFragment;
 import com.flyzebra.fota.fragment.MainFragment;
 import com.flyzebra.fota.fragment.SettingsFragment;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.PropUtil;
 
 public class MainActivity extends AppCompatActivity {
     private static final String[] PERMISSIONS_STORAGE = {
@@ -55,12 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, MainService.class));
         replaceFragMent(new MainFragment());
+
+        PropUtil.set("ctl.stop", "MonitorHobotApk");
     }
 
     private void initRect() {
         int width = getWindow().getDecorView().getWidth();
         int height = getWindow().getDecorView().getHeight();
-        ;
         setp = width / 8;
         rect = new Rect[]{new Rect(0, 0, setp, height / 2),
                 new Rect(width - setp, 0, width, height / 2),
@@ -137,10 +139,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_main:
-//                if (!(mFragment instanceof MainFragment))
-//                    replaceFragMent(new MainFragment());
-//                break;
             case R.id.action_settings:
                 if (!(mFragment instanceof SettingsFragment))
                     replaceFragMent(new SettingsFragment());
@@ -153,9 +151,16 @@ public class MainActivity extends AppCompatActivity {
                 if (!(mFragment instanceof FileFragment))
                     replaceFragMent(new FileFragment());
                 break;
-//            case R.id.action_exit:
-//                onBackPressed();
-//                break;
+            case R.id.action_forceexit:
+                stopService(new Intent(this, MainService.class));
+                finish();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(1);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -164,5 +169,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         stopService(new Intent(this, MainService.class));
         super.onDestroy();
+        FlyLog.d("MainService onDestroy");
     }
 }
