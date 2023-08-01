@@ -165,5 +165,4 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this, MainService.class));
         super.onDestroy();
     }
-
 }

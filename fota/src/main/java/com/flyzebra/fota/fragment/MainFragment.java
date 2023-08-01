@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.flyzebra.utils.PropUtil;
 public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, FlyEvent {
 
     private TextView tv_version, tv_verinfo, tv_upinfo;
+    private RelativeLayout progressLayout;
     private ProgressBar progressBar;
     private Button bt_updater;
     private StringBuffer verinfo = new StringBuffer();
@@ -43,6 +45,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
         progressBar = view.findViewById(R.id.ac_pbar);
         bt_updater = view.findViewById(R.id.bt_updater);
         bt_updater.setOnClickListener(this);
+        progressLayout = view.findViewById(R.id.ll01);
         progressBar.setMax(100);
         tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n");
 
@@ -76,74 +79,88 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
             case CODE_01:
                 upVersionInfo();
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //获取到最新版本
             case CODE_02:
                 upVersionInfo();
                 bt_updater.setText(R.string.updater_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //获取最新版本失败
             case CODE_03:
                 upVersionInfo();
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //获取最新版本失败，网络错误！
             case CODE_04:
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //正在下载升级包...
             case CODE_05:
                 bt_updater.setText(R.string.up_system_running);
-                bt_updater.setEnabled(false);
+                bt_updater.setVisibility(View.INVISIBLE);
+                progressLayout.setVisibility(View.VISIBLE);
                 break;
             //下载升级包出错!
             case CODE_06:
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //正在校验升级包MD5值...
             case CODE_07:
                 bt_updater.setText(R.string.up_system_running);
-                bt_updater.setEnabled(false);
+                bt_updater.setVisibility(View.INVISIBLE);
+                progressLayout.setVisibility(View.VISIBLE);
                 break;
             //升级包MD5值校验错误!
             case CODE_08:
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //获取升级参数失败！
             case CODE_09:
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //升级失败！
             case CODE_10:
                 bt_updater.setText(R.string.check_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //正在升级系统
             case CODE_11:
                 bt_updater.setText(R.string.up_system_running);
-                bt_updater.setEnabled(false);
+                bt_updater.setVisibility(View.INVISIBLE);
+                progressLayout.setVisibility(View.VISIBLE);
                 break;
             //系统升级完成，需要重启系统才能生效！
             case CODE_12:
                 bt_updater.setText(R.string.restart_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
             //系统正在更新
             case CODE_91:
                 bt_updater.setText(R.string.up_system_running);
-                bt_updater.setEnabled(false);
+                bt_updater.setVisibility(View.INVISIBLE);
+                progressLayout.setVisibility(View.VISIBLE);
                 break;
             //需要手动更新版本
             case CODE_92:
                 bt_updater.setText(R.string.updater_system);
-                bt_updater.setEnabled(true);
+                bt_updater.setVisibility(View.VISIBLE);
+                progressLayout.setVisibility(View.INVISIBLE);
                 break;
         }
     }
