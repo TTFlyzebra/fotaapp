@@ -2,7 +2,6 @@ package com.flyzebra.fota.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.SystemProperties;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.flyzebra.fota.model.FlyEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.utils.IDUtil;
+import com.flyzebra.utils.PropUtil;
 
 public class MainFragment extends Fragment implements View.OnClickListener, IFlyup.FlyupResult, FlyEvent {
 
@@ -167,7 +167,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, IFly
                     builder.setTitle("系统升级完成，请重启系统！");
                     builder.setPositiveButton("确定",
                             (dialog, which) -> {
-                                SystemProperties.set("sys.powerctl", "reboot");
+                                PropUtil.set("sys.powerctl", "reboot");
                                 //Intent reboot = new Intent(Intent.ACTION_REBOOT);
                                 //reboot.putExtra("nowait", 1);
                                 //reboot.putExtra("interval", 1);

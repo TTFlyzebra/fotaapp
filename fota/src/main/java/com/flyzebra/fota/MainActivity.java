@@ -52,10 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Intent mainintent = new Intent();
-        mainintent.setClass(this, MainService.class);
-        mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startService(mainintent);
+        startService(new Intent(this, MainService.class));
         replaceFragMent(new MainFragment());
     }
 
@@ -155,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        stopService(new Intent(this, MainService.class));
         super.onDestroy();
     }
 

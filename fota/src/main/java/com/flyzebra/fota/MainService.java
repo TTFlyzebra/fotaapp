@@ -9,13 +9,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
-import android.os.SystemProperties;
 
 import com.flyzebra.fota.model.FlyEvent;
 import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.PropUtil;
 import com.flyzebra.utils.SPUtil;
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, FlyEvent {
@@ -133,7 +133,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 if(upok_model.equals(Config.UPOK_MODEL_RESTART)) {
                     if(!pm.isInteractive()){
-                        SystemProperties.set("sys.powerctl", "reboot");
+                        PropUtil.set("sys.powerctl", "reboot");
                     }
                 }
                 break;

@@ -32,11 +32,6 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
-//adb shell升级OTA命令
-//adb push ./update-xxxx.zip /data/update.zip
-//uncrypt /data/update.zip /cache/recovery/block.map
-//echo  "--update_package=@/cache/recovery/block.map"  > /cache/recovery/command
-//reboot recovery
 public class Flyup implements IFlyup, FlyEvent {
 
     private static final HandlerThread mTaskThread = new HandlerThread("fota_thread");
@@ -294,7 +289,6 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.ErrorCodeConstants.PAYLOAD_HASH_MISMATCH_ERROR:
                 case UpdateEngine.ErrorCodeConstants.PAYLOAD_SIZE_MISMATCH_ERROR:
                 case UpdateEngine.ErrorCodeConstants.DOWNLOAD_PAYLOAD_VERIFICATION_ERROR:
-                case UpdateEngine.ErrorCodeConstants.PAYLOAD_TIMESTAMP_ERROR:
                 case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
                 default:
                     isRunning.set(false);
