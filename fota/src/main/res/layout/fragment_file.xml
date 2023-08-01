@@ -9,11 +9,13 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:textColor="#000"
         android:id="@+id/fm_file_tv01"
-        android:gravity="start|center"
         android:layout_width="match_parent"
-        android:layout_height="40dp"/>
+        android:layout_height="40dp"
+        android:gravity="start|center"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textColor="#000" />
 
     <ListView
         android:id="@+id/fm_file_lv01"

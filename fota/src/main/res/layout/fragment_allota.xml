@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:padding="10dp"
-        android:textColor="#FFF" />
+        android:padding="2dp"
+        android:textColor="#000" />
 
     <ListView
         android:id="@+id/fm_file_lv01"

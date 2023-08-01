@@ -46,10 +46,7 @@ public class AllotaFragment extends Fragment implements AllotaAdapter.OnItemClic
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         tv_version = view.findViewById(R.id.tv_version);
-        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()) + "\n"
-                + "IMEI:" + IDUtil.getIMEI(getActivity()) + "\n"
-                + "MYID:" + IDUtil.getAndroidID(getActivity()) + "\n"
-        );
+        tv_version.setText("当前版本：\n" + IDUtil.getVersion(getActivity()));
 
         listView = view.findViewById(R.id.fm_file_lv01);
         mAdapter = new AllotaAdapter(getActivity(), vOtaList, R.layout.allota_item, this);
