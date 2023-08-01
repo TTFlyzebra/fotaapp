@@ -20,4 +20,15 @@
 <!--        android:orderInCategory="100"-->
 <!--        android:title="@string/exit"-->
 <!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/action_allota"
+        android:orderInCategory="100"
+        android:title="@string/more_versions"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_fileota"
+        android:orderInCategory="100"
+        android:title="@string/local_versions"
+        app:showAsAction="never" />
 </menu>

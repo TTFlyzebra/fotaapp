@@ -3,8 +3,6 @@ package com.flyzebra.fota;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -36,7 +34,6 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         FlyLog.d("++++F-ZEBRA OTA 1.06--2022.05.08++++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
-        startCheckUpVersion(0);
     }
 
     @Override
@@ -57,25 +54,9 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
         super.onDestroy();
     }
 
-    private boolean isConnect(){
-        boolean isConnect = false;
-        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
-        if (networkCapabilities != null) {
-            isConnect = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-        }
-        return isConnect;
-    }
-
     @Override
     public void run() {
-        FlyLog.d("fota service running.....");
-        if (!isConnect()){
-            FlyLog.w("Network is not connect, retry after 2 seconds.");
-            startCheckUpVersion(2000);
-        }else{
-            Flyup.getInstance().updateNewVersion();
-        }
+        Flyup.getInstance().updateNewVersion();
     }
 
     @Override
