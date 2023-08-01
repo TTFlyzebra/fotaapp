@@ -13,7 +13,6 @@ import com.flyzebra.fota.model.Flyup;
 import com.flyzebra.fota.model.IFlyup;
 import com.flyzebra.fota.view.NotificationView;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.PropUtil;
 import com.flyzebra.utils.SPUtil;
 
 public class MainService extends Service implements Runnable, IFlyup.FlyupResult, FlyEvent {
@@ -110,11 +109,12 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             //系统升级完成，需要重启系统才能生效！
             case CODE_12:
                 notificationView.show(code, progress, msg);
-                String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+                String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL, Config.UPOK_MODEL_NORMAL);
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                if(upok_model.equals(Config.UPOK_MODEL_RESTART)) {
-                    if(!pm.isInteractive()){
-                        PropUtil.set("sys.powerctl", "reboot");
+                if (upok_model.equals(Config.UPOK_MODEL_RESTART)) {
+                    if (!pm.isInteractive()) {
+                        PowerManager pManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                        pManager.reboot("");
                     }
                 }
                 break;
