@@ -245,36 +245,36 @@ public class Flyup implements IFlyup, FlyEvent {
         @Override
         public void onStatusUpdate(int i, float v) {
             switch (i) {
-                case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在检查系统……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在复制文件……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.VERIFYING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在校验文件……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.FINALIZING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在升级系统……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.ATTEMPTING_ROLLBACK:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在回滚系统……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
-                    isFinish.set(true);
-                    notifyListener(CODE_12, 100, "系统升级完成，需要重启系统！");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
-                    notifyListener(CODE_10, 100, "REPORTING_ERROR_EVENT……");
-                    break;
-                case UpdateEngine.UpdateStatusConstants.DISABLED:
-                    notifyListener(CODE_10, 100, "DISABLED……");
-                    break;
                 case UpdateEngine.UpdateStatusConstants.IDLE:
                     notifyListener(CODE_10, 100, "IDLE……");
                     break;
+                case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "CHECKING_FOR_UPDATE……");
+                    break;
                 case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
                     notifyListener(CODE_10, 100, "UPDATE_AVAILABLE……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "DOWNLOADING……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.VERIFYING:
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "VERIFYING……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.FINALIZING:
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "FINALIZING……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
+                    isFinish.set(true);
+                    notifyListener(CODE_11, 100, "UPDATED_NEED_REBOOT……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
+                    notifyListener(CODE_11, 100, "REPORTING_ERROR_EVENT……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.ATTEMPTING_ROLLBACK:
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "ATTEMPTING_ROLLBACK……");
+                    break;
+                case UpdateEngine.UpdateStatusConstants.DISABLED:
+                    notifyListener(CODE_11, 100, "DISABLED……");
                     break;
                 default:
                     isRunning.set(false);
@@ -304,7 +304,7 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
                 default:
                     isRunning.set(false);
-                    notifyListener(CODE_10, 100, "系统升级失败，错误代码" + i);
+                    notifyListener(CODE_10, 100, "系统升级失败，错误码["+i+"]");
                     break;
             }
         }
