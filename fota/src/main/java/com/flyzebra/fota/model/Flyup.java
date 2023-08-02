@@ -246,13 +246,13 @@ public class Flyup implements IFlyup, FlyEvent {
         public void onStatusUpdate(int i, float v) {
             switch (i) {
                 case UpdateEngine.UpdateStatusConstants.IDLE:
-                    notifyListener(CODE_10, 100, "IDLE……");
+                    notifyListener(CODE_11, 100, "IDLE……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
                     notifyListener(CODE_11, Math.min((int) (v * 100), 100), "CHECKING_FOR_UPDATE……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
-                    notifyListener(CODE_10, 100, "UPDATE_AVAILABLE……");
+                    notifyListener(CODE_11, 100, "UPDATE_AVAILABLE……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
                     notifyListener(CODE_11, Math.min((int) (v * 100), 100), "DOWNLOADING……");
