@@ -265,9 +265,17 @@ public class Flyup implements IFlyup, FlyEvent {
                     notifyListener(CODE_12, 100, "系统升级完成，需要重启系统！");
                     break;
                 case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
+                    notifyListener(CODE_10, 100, "REPORTING_ERROR_EVENT……");
+                    break;
                 case UpdateEngine.UpdateStatusConstants.DISABLED:
+                    notifyListener(CODE_10, 100, "DISABLED……");
+                    break;
                 case UpdateEngine.UpdateStatusConstants.IDLE:
+                    notifyListener(CODE_10, 100, "IDLE……");
+                    break;
                 case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
+                    notifyListener(CODE_10, 100, "UPDATE_AVAILABLE……");
+                    break;
                 default:
                     isRunning.set(false);
                     notifyListener(CODE_10, 100, "升级失败，重启系统后再试……");
