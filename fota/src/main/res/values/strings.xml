@@ -13,6 +13,9 @@
     <string name="exit">退出</string>
     <string name="force_exit">强制退出</string>
     <string name="settings">参数设置</string>
+    <string name="upck_model">检测到新版本是否自动升级</string>
+    <string name="upck_auto">自动升级</string>
+    <string name="upck_hand">手动手级</string>
     <string name="upok_model">升级完成后是否重启</string>
     <string name="upok_dialog">弹提示框</string>
     <string name="upok_restart">自动重启</string>

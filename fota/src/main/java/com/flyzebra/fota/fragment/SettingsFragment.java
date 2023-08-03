@@ -16,7 +16,8 @@ import com.flyzebra.utils.PropUtil;
 import com.flyzebra.utils.SPUtil;
 
 public class SettingsFragment extends Fragment {
-    private RadioButton rb01, rb02;
+    private RadioButton rb_upck_auto, rb_upck_hand;
+    private RadioButton rb_upok_restart, rb_upok_normal;
     private EditText et01;
 
     @Nullable
@@ -27,27 +28,49 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        rb01 = view.findViewById(R.id.fm_set_rb01);
-        rb02 = view.findViewById(R.id.fm_set_rb02);
+        rb_upck_auto = view.findViewById(R.id.fm_set_upck_auto);
+        rb_upck_hand = view.findViewById(R.id.fm_set_upck_hand);
+        rb_upok_restart = view.findViewById(R.id.fm_set_upok_restart);
+        rb_upok_normal = view.findViewById(R.id.fm_set_upok_normal);
         et01 = view.findViewById(R.id.fm_set_et01);
 
-        String upok_model =  (String) SPUtil.get(getActivity(), Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
-        if(upok_model.equals(Config.UPOK_MODEL_NORMAL)){
-            rb01.setChecked(false);
-            rb02.setChecked(true);
+        String upck_model =  (String) SPUtil.get(getActivity(), Config.UPCK_MODEL,Config.UPCK_HAND);
+        if(upck_model.equals(Config.UPCK_HAND)){
+            rb_upck_auto.setChecked(false);
+            rb_upck_hand.setChecked(true);
         }else {
-            rb01.setChecked(true);
-            rb02.setChecked(false);
+            rb_upck_auto.setChecked(true);
+            rb_upck_hand.setChecked(false);
         }
 
-        rb01.setOnCheckedChangeListener((compoundButton, b) -> {
+        rb_upck_auto.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b) {
-                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_RESTART);
+                SPUtil.set(getActivity(),Config.UPCK_MODEL,Config.UPCK_AUTO);
             }
         });
-        rb02.setOnCheckedChangeListener((compoundButton, b) -> {
+        rb_upck_hand.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+                SPUtil.set(getActivity(),Config.UPCK_MODEL,Config.UPCK_HAND);
+            }
+        });
+
+        String upok_model =  (String) SPUtil.get(getActivity(), Config.UPOK_MODEL,Config.UPOK_NORMAL);
+        if(upok_model.equals(Config.UPOK_NORMAL)){
+            rb_upok_restart.setChecked(false);
+            rb_upok_normal.setChecked(true);
+        }else {
+            rb_upok_restart.setChecked(true);
+            rb_upok_normal.setChecked(false);
+        }
+
+        rb_upok_restart.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_RESTART);
+            }
+        });
+        rb_upok_normal.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                SPUtil.set(getActivity(),Config.UPOK_MODEL,Config.UPOK_NORMAL);
             }
         });
 

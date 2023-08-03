@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.flyzebra.flydown.FlyDown;
 import com.flyzebra.flydown.request.IFileReQuestListener;
+import com.flyzebra.fota.Config;
 import com.flyzebra.fota.bean.OtaPackage;
 import com.flyzebra.fota.bean.RetVersion;
 import com.flyzebra.fota.httpApi.ApiAction;
@@ -17,6 +18,7 @@ import com.flyzebra.fota.httpApi.ApiActionlmpl;
 import com.flyzebra.utils.FileUtils;
 import com.flyzebra.utils.FlyLog;
 import com.flyzebra.utils.IDUtil;
+import com.flyzebra.utils.SPUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,7 +63,7 @@ public class Flyup implements IFlyup, FlyEvent {
     public void init(Context context) {
         FlyDown.mCacheDir = "/data/cache/recovery";
         File file = new File(FlyDown.mCacheDir);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.mkdirs();
         }
         mContext = context;
@@ -134,7 +136,9 @@ public class Flyup implements IFlyup, FlyEvent {
                             FlyDown.delOtherFile(mOtaPackage.filemd5);
                             notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "……");
                             isRunning.set(false);
-                            if (mOtaPackage.upType == 1) {
+                            String upck_model = (String) SPUtil.get(mContext, Config.UPCK_MODEL, Config.UPCK_HAND);
+                            boolean auto = upck_model.equals(Config.UPCK_AUTO);
+                            if (mOtaPackage.upType == 1 && auto) {
                                 updaterOtaPackage(mOtaPackage);
                             } else {
                                 notifyListener(CODE_92, 0, "需要手动更新……");
@@ -240,7 +244,6 @@ public class Flyup implements IFlyup, FlyEvent {
         });
     }
 
-
     UpdateEngineCallback callback = new UpdateEngineCallback() {
         @Override
         public void onStatusUpdate(int i, float v) {
@@ -264,7 +267,6 @@ public class Flyup implements IFlyup, FlyEvent {
                     notifyListener(CODE_11, Math.min((int) (v * 100), 100), "FINALIZING……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
-                    isFinish.set(true);
                     notifyListener(CODE_11, 100, "UPDATED_NEED_REBOOT……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
@@ -304,7 +306,7 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
                 default:
                     isRunning.set(false);
-                    notifyListener(CODE_10, 100, "系统升级失败，错误码["+i+"]");
+                    notifyListener(CODE_10, 100, "系统升级失败，错误码[" + i + "]");
                     break;
             }
         }
@@ -367,7 +369,7 @@ public class Flyup implements IFlyup, FlyEvent {
                         payloadOffset,
                         payloadSize,
                         props);
-            }catch (Exception e){
+            } catch (Exception e) {
                 FlyLog.e(e.toString());
             }
         });
