@@ -92,4 +92,11 @@ public class NotificationView {
 //        ((Service)mContext).stopForeground(true);
     }
 
+
+    public void release() {
+        notimanager.cancel(NOTIFICATION_ID);
+        mContext.unregisterReceiver(notifyBroadCast);
+//        ((Service)mContext).stopForeground(true);
+    }
+
 }

@@ -46,7 +46,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onDestroy() {
-        notificationView.hide();
+        notificationView.release();
         mHandler.removeCallbacksAndMessages(null);
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
