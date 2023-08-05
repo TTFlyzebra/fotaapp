@@ -33,7 +33,7 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
     @Override
     public void onCreate() {
         super.onCreate();
-        FlyLog.d("++++F-ZEBRA OTA 1.06--2022.05.08++++");
+        FlyLog.d("++++F-ZEBRA OTA 2.00--2023.08.05++++");
         Flyup.getInstance().addListener(this);
         notificationView = new NotificationView(this);
         startCheckUpVersion(0);
@@ -51,36 +51,21 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
 
     @Override
     public void onDestroy() {
+        notificationView.release();
         mHandler.removeCallbacksAndMessages(null);
         Flyup.getInstance().stopUpVersion();
         Flyup.getInstance().removeListener(this);
-        super.onDestroy();
-    }
-
-    private boolean isConnect(){
-        boolean isConnect = false;
-        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
-        if (networkCapabilities != null) {
-            isConnect = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-        }
-        return isConnect;
+        FlyLog.d("MainActivity onDestroy");
     }
 
     @Override
     public void run() {
-        FlyLog.d("fota service running.....");
-        if (!isConnect()){
-            FlyLog.w("Network is not connect, retry after 2 seconds.");
-            startCheckUpVersion(2000);
-        }else{
-            Flyup.getInstance().updateNewVersion();
-        }
+        Flyup.getInstance().updateNewVersion();
     }
 
     @Override
     public void upVesionProgress(int code, int progress, String msg) {
-        FlyLog.d("upVesionProgress: %d, %d, %s", code, progress, msg);
+        FlyLog.d("upVesionProgress[%d]: progress %d, %s", code, progress, msg);
         switch (code) {
             //已是最新版本
             case CODE_01:
@@ -129,11 +114,12 @@ public class MainService extends Service implements Runnable, IFlyup.FlyupResult
             //系统升级完成，需要重启系统才能生效！
             case CODE_12:
                 notificationView.show(code, progress, msg);
-                String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL,Config.UPOK_MODEL_NORMAL);
+                String upok_model = (String) SPUtil.get(this, Config.UPOK_MODEL, Config.UPOK_NORMAL);
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                if(upok_model.equals(Config.UPOK_MODEL_RESTART)) {
-                    if(!pm.isInteractive()){
-                        SystemProperties.set("sys.powerctl", "reboot");
+                if (upok_model.equals(Config.UPOK_RESTART)) {
+                    if (!pm.isInteractive()) {
+                        PowerManager pManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                        pManager.reboot("");
                     }
                 }
                 break;

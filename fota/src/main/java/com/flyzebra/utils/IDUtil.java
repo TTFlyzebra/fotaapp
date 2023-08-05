@@ -38,10 +38,7 @@ public class IDUtil {
      * @return
      */
     public static String getVersion(Context context) {
-        String version = PropUtil.get("persist.vendor.display.id", "");
-        if (TextUtils.isEmpty(version)) {
-            version = PropUtil.get("ro.build.display.id", "");
-        }
+        String version = PropUtil.get("ro.build.display.id", "");
         return version.toUpperCase();
     }
 

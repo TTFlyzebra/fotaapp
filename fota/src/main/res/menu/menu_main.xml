@@ -3,11 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.flyzebra.test.MainActivity">
 
-<!--    <item-->
-<!--        android:id="@+id/action_main"-->
-<!--        android:orderInCategory="100"-->
-<!--        android:title="@string/main"-->
-<!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/action_allota"
+        android:orderInCategory="100"
+        android:title="@string/more_versions"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_fileota"
+        android:orderInCategory="100"
+        android:title="@string/local_versions"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_settings"
@@ -15,9 +21,9 @@
         android:title="@string/settings"
         app:showAsAction="never" />
 
-<!--    <item-->
-<!--        android:id="@+id/action_exit"-->
-<!--        android:orderInCategory="100"-->
-<!--        android:title="@string/exit"-->
-<!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/action_forceexit"
+        android:orderInCategory="100"
+        android:title="@string/force_exit"
+        app:showAsAction="never" />
 </menu>

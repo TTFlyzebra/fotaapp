@@ -1,3 +1,3 @@
 include ':flydown'
 include ':fota'
-rootProject.name = "fota"
+rootProject.name = "Fota"

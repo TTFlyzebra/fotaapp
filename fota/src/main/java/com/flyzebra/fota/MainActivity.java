@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -20,13 +21,14 @@ import com.flyzebra.fota.fragment.FileFragment;
 import com.flyzebra.fota.fragment.MainFragment;
 import com.flyzebra.fota.fragment.SettingsFragment;
 import com.flyzebra.utils.FlyLog;
+import com.flyzebra.utils.PropUtil;
 
 public class MainActivity extends AppCompatActivity {
-    private static String[] PERMISSIONS_STORAGE = {
+    private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    private static int REQUEST_PERMISSION_CODE = 101;
+    private static final int REQUEST_PERMISSION_CODE = 101;
 
     /**
      * 添加进入AllApps后门
@@ -35,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     int passWordCount2 = 0;
     Rect[] rect;
     int setp = 200;
-    int passWords1[] = new int[]{0, 1, 3, 2};
-    int passWords2[] = new int[]{0, 2, 3, 1};
+    int[] passWords1 = new int[]{0, 1, 3, 2};
+    int[] passWords2 = new int[]{0, 2, 3, 1};
 
     private Fragment mFragment;
 
@@ -52,21 +54,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Intent mainintent = new Intent();
-        mainintent.setClass(this, MainService.class);
-        mainintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startService(mainintent);
+        startService(new Intent(this, MainService.class));
         replaceFragMent(new MainFragment());
     }
 
     private void initRect() {
         int width = getWindow().getDecorView().getWidth();
-        int height = getWindow().getDecorView().getHeight();;
+        int height = getWindow().getDecorView().getHeight();
         setp = width / 8;
-        rect = new Rect[]{new Rect(0, 0, setp, height/2),
-                new Rect(width - setp, 0, width, height/2),
-                new Rect(0, height/2, setp, height),
-                new Rect(width - setp, height/2, width, height)};
+        rect = new Rect[]{new Rect(0, 0, setp, height / 2),
+                new Rect(width - setp, 0, width, height / 2),
+                new Rect(0, height / 2, setp, height),
+                new Rect(width - setp, height / 2, width, height)};
     }
 
     @Override
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_CODE) {
             FlyLog.d("onRequestPermissionsResult");
@@ -138,24 +137,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_main:
-//                if (!(mFragment instanceof MainFragment))
-//                    replaceFragMent(new MainFragment());
-//                break;
             case R.id.action_settings:
                 if (!(mFragment instanceof SettingsFragment))
                     replaceFragMent(new SettingsFragment());
                 break;
-//            case R.id.action_exit:
-//                onBackPressed();
-//                break;
+            case R.id.action_allota:
+                if (!(mFragment instanceof AllotaFragment))
+                    replaceFragMent(new AllotaFragment());
+                break;
+            case R.id.action_fileota:
+                if (!(mFragment instanceof FileFragment))
+                    replaceFragMent(new FileFragment());
+                break;
+            case R.id.action_forceexit:
+                stopService(new Intent(this, MainService.class));
+                finish();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(1);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onDestroy() {
+        stopService(new Intent(this, MainService.class));
         super.onDestroy();
+        FlyLog.d("MainService onDestroy");
     }
-
 }
