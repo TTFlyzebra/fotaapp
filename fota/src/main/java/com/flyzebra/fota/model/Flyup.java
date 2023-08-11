@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.UpdateEngine;
 import android.os.UpdateEngineCallback;
 import android.text.TextUtils;
@@ -46,18 +47,18 @@ public class Flyup implements IFlyup, FlyEvent {
     private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Context mContext;
-    private AtomicBoolean isRunning = new AtomicBoolean(false);
-    private AtomicBoolean isFinish = new AtomicBoolean(false);
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private PowerManager.WakeLock wakeLock;
+    private final AtomicBoolean isFinish = new AtomicBoolean(false);
 
-    private ApiAction apiAction;
+    private ApiAction apiAction = new ApiActionlmpl();
 
-    private List<FlyupResult> flyupResults = new ArrayList<>();
+    private final List<FlyupResult> flyupResults = new ArrayList<>();
     private OtaPackage mOtaPackage;
     private int lastCode = 0;
     private int lastProgress = 0;
     private String lastMessage = "";
-    private AtomicBoolean isFirst = new AtomicBoolean(true);
-    private UpdateEngine mUpdateEngine = new UpdateEngine();
+    private final UpdateEngine mUpdateEngine = new UpdateEngine();
 
     @Override
     public void init(Context context) {
@@ -67,6 +68,8 @@ public class Flyup implements IFlyup, FlyEvent {
             file.mkdirs();
         }
         mContext = context;
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, mContext.getPackageName());
     }
 
     @Override
@@ -115,9 +118,7 @@ public class Flyup implements IFlyup, FlyEvent {
             return;
         }
         isRunning.set(true);
-        if (apiAction == null) {
-            apiAction = new ApiActionlmpl();
-        }
+        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
         apiAction.getUpVersion(
                 IDUtil.getModel(mContext),
                 IDUtil.getVersion(mContext),
@@ -130,12 +131,13 @@ public class Flyup implements IFlyup, FlyEvent {
 
                     @Override
                     public void onNext(@NonNull RetVersion resultVersion) {
+                        isRunning.set(false);
+                        wakeLock.release();
                         mOtaPackage = resultVersion.data;
                         FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
                         if (resultVersion.code == 0) {
                             FlyDown.delOtherFile(mOtaPackage.filemd5);
                             notifyListener(CODE_02, 0, "新版本" + mOtaPackage.version + "……");
-                            isRunning.set(false);
                             String upck_model = (String) SPUtil.get(mContext, Config.UPCK_MODEL, Config.UPCK_HAND);
                             boolean auto = upck_model.equals(Config.UPCK_AUTO);
                             if (mOtaPackage.upType == 1 && auto) {
@@ -144,20 +146,19 @@ public class Flyup implements IFlyup, FlyEvent {
                                 notifyListener(CODE_92, 0, "需要手动更新……");
                             }
                         } else if (resultVersion.code == 1) {
-                            isRunning.set(false);
                             FlyDown.delAllDownFile();
                             notifyListener(CODE_01, 100, "已是最新版本！");
                         } else {
-                            isRunning.set(false);
                             notifyListener(CODE_03, 100, "获取版本失败……");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        FlyLog.e(e.toString());
-                        notifyListener(CODE_04, 1, "正在连接服务器……");
+                        wakeLock.release();
                         isRunning.set(false);
+                        notifyListener(CODE_04, 1, "正在连接服务器……");
+                        FlyLog.e(e.toString());
                     }
 
                     @Override
@@ -176,6 +177,7 @@ public class Flyup implements IFlyup, FlyEvent {
                 || TextUtils.isEmpty(mOtaPackage.filemd5)) {
             updateNewVersion();
         } else {
+            wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
             isRunning.set(true);
             if (FlyDown.isFileDownFinish(otaPackage.filemd5)) {
                 verityFileMd5(mOtaPackage);
@@ -208,6 +210,7 @@ public class Flyup implements IFlyup, FlyEvent {
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
             public void error(String url, int ErrorCode) {
+                wakeLock.release();
                 isRunning.set(false);
                 notifyListener(CODE_06, 100, "下载升级包失败……");
             }
@@ -236,10 +239,11 @@ public class Flyup implements IFlyup, FlyEvent {
                 final File file = new File(FlyDown.getFilePath(otaPackage.filemd5));
                 updaterFile(file);
             } else {
-                FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
+                wakeLock.release();
                 isRunning.set(false);
                 FlyDown.delDownFile(otaPackage.filemd5);
                 notifyListener(CODE_08, 100, "升级包校验失败……");
+                FlyLog.e("verityOtaFile failed! md5sum=%s, fileName=%s", md5sum, FlyDown.getFilePath(md5sum));
             }
         });
     }
@@ -249,38 +253,45 @@ public class Flyup implements IFlyup, FlyEvent {
         public void onStatusUpdate(int i, float v) {
             switch (i) {
                 case UpdateEngine.UpdateStatusConstants.IDLE:
-                    notifyListener(CODE_11, 100, "IDLE……");
+                    //notifyListener(CODE_11, 100, "IDLE……");
+                    FlyLog.d("升级状态：[IDLE]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.CHECKING_FOR_UPDATE:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "CHECKING_FOR_UPDATE……");
+                    //notifyListener(CODE_11, Math.min((int) (v * 100), 100), "CHECKING_FOR_UPDATE……");
+                    FlyLog.d("升级状态：[CHECKING_FOR_UPDATE]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.UPDATE_AVAILABLE:
-                    notifyListener(CODE_11, 100, "UPDATE_AVAILABLE……");
+                    //notifyListener(CODE_11, 100, "UPDATE_AVAILABLE……");
+                    FlyLog.d("升级状态：[UPDATE_AVAILABLE]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.DOWNLOADING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "DOWNLOADING……");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在写入更新文件……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.VERIFYING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "VERIFYING……");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在校验更新文件……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.FINALIZING:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "FINALIZING……");
+                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "正在进行最后的校验……");
                     break;
                 case UpdateEngine.UpdateStatusConstants.UPDATED_NEED_REBOOT:
-                    notifyListener(CODE_11, 100, "UPDATED_NEED_REBOOT……");
+                    //notifyListener(CODE_11, 100, "UPDATED_NEED_REBOOT……");
+                    FlyLog.d("升级状态：[UPDATED_NEED_REBOOT]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.REPORTING_ERROR_EVENT:
-                    notifyListener(CODE_11, 100, "REPORTING_ERROR_EVENT……");
+                    //notifyListener(CODE_11, 100, "REPORTING_ERROR_EVENT……");
+                    FlyLog.d("升级状态：[REPORTING_ERROR_EVENT]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.ATTEMPTING_ROLLBACK:
-                    notifyListener(CODE_11, Math.min((int) (v * 100), 100), "ATTEMPTING_ROLLBACK……");
+                    //notifyListener(CODE_11, Math.min((int) (v * 100), 100), "ATTEMPTING_ROLLBACK……");
+                    FlyLog.d("升级状态：[ATTEMPTING_ROLLBACK]");
                     break;
                 case UpdateEngine.UpdateStatusConstants.DISABLED:
-                    notifyListener(CODE_11, 100, "DISABLED……");
+                    //notifyListener(CODE_11, 100, "DISABLED……");
+                    FlyLog.d("升级状态：[DISABLED]");
                     break;
                 default:
-                    isRunning.set(false);
-                    notifyListener(CODE_10, 100, "升级失败，重启系统后再试……");
+                    notifyListener(CODE_10, 100, "升级状态：[Code:" + i + "]");
+                    FlyLog.e("升级状态：[Code:" + i + "]");
                     break;
             }
 
@@ -290,6 +301,8 @@ public class Flyup implements IFlyup, FlyEvent {
         public void onPayloadApplicationComplete(int i) {
             switch (i) {
                 case UpdateEngine.ErrorCodeConstants.SUCCESS:
+                    wakeLock.release();
+                    isRunning.set(false);
                     isFinish.set(true);
                     notifyListener(CODE_12, 100, "系统升级完成，需要重启系统！");
                     break;
@@ -305,8 +318,10 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.ErrorCodeConstants.DOWNLOAD_PAYLOAD_VERIFICATION_ERROR:
                 case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
                 default:
+                    wakeLock.release();
                     isRunning.set(false);
                     notifyListener(CODE_10, 100, "系统升级失败，错误码[" + i + "]");
+                    FlyLog.e("系统升级失败，错误码[" + i + "]");
                     break;
             }
         }
@@ -314,7 +329,6 @@ public class Flyup implements IFlyup, FlyEvent {
 
     @Override
     public void updaterFile(File file) {
-        isRunning.set(true);
         tHandler.post(() -> {
             final String PAYLOAD_BIN_FILE = "payload.bin";
             final String PAYLOAD_PROPERTIES = "payload_properties.txt";
@@ -346,9 +360,10 @@ public class Flyup implements IFlyup, FlyEvent {
                                 new InputStreamReader(zipFile.getInputStream(entry)))) {
                             props = buffer.lines().toArray(String[]::new);
                         } catch (Exception e) {
-                            FlyLog.e(e.toString());
+                            wakeLock.release();
                             isRunning.set(false);
                             notifyListener(CODE_09, 100, "获取升级参数失败！");
+                            FlyLog.e(e.toString());
                             return;
                         }
                     }
@@ -357,9 +372,11 @@ public class Flyup implements IFlyup, FlyEvent {
                     }
                 }
             } catch (Exception e) {
-                FlyLog.e(e.toString());
+                wakeLock.release();
                 isRunning.set(false);
                 notifyListener(CODE_10, 100, "升级文件校验失败！");
+                FlyLog.e(e.toString());
+                return;
             }
             try {
                 mUpdateEngine.unbind();
@@ -370,6 +387,9 @@ public class Flyup implements IFlyup, FlyEvent {
                         payloadSize,
                         props);
             } catch (Exception e) {
+                wakeLock.release();
+                isRunning.set(false);
+                notifyListener(CODE_10, 100, "升级异常[%s" + e.toString() + "]");
                 FlyLog.e(e.toString());
             }
         });

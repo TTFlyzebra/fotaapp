@@ -21,7 +21,6 @@ import com.flyzebra.fota.fragment.FileFragment;
 import com.flyzebra.fota.fragment.MainFragment;
 import com.flyzebra.fota.fragment.SettingsFragment;
 import com.flyzebra.utils.FlyLog;
-import com.flyzebra.utils.PropUtil;
 
 public class MainActivity extends AppCompatActivity {
     private static final String[] PERMISSIONS_STORAGE = {
@@ -56,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, MainService.class));
         replaceFragMent(new MainFragment());
-
-        PropUtil.set("ctl.stop", "MonitorHobotApk");
     }
 
     private void initRect() {
