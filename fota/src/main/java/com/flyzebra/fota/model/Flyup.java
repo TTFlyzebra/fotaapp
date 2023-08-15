@@ -131,8 +131,12 @@ public class Flyup implements IFlyup, FlyEvent {
 
                     @Override
                     public void onNext(@NonNull RetVersion resultVersion) {
+                        try{
+                            wakeLock.release();
+                        }catch (Exception e){
+                            FlyLog.e(e.toString());
+                        }
                         isRunning.set(false);
-                        wakeLock.release();
                         mOtaPackage = resultVersion.data;
                         FlyLog.d("getUpVersion OK [%s]", mOtaPackage.version);
                         if (resultVersion.code == 0) {
@@ -155,7 +159,11 @@ public class Flyup implements IFlyup, FlyEvent {
 
                     @Override
                     public void onError(Throwable e) {
-                        wakeLock.release();
+                        try{
+                            wakeLock.release();
+                        }catch (Exception e1){
+                            FlyLog.e(e1.toString());
+                        }
                         isRunning.set(false);
                         notifyListener(CODE_04, 1, "正在连接服务器……");
                         FlyLog.e(e.toString());
@@ -210,7 +218,11 @@ public class Flyup implements IFlyup, FlyEvent {
         IFileReQuestListener listener = new IFileReQuestListener() {
             @Override
             public void error(String url, int ErrorCode) {
-                wakeLock.release();
+                try{
+                    wakeLock.release();
+                }catch (Exception e){
+                    FlyLog.e(e.toString());
+                }
                 isRunning.set(false);
                 notifyListener(CODE_06, 100, "下载升级包失败……");
             }
@@ -239,7 +251,11 @@ public class Flyup implements IFlyup, FlyEvent {
                 final File file = new File(FlyDown.getFilePath(otaPackage.filemd5));
                 updaterFile(file);
             } else {
-                wakeLock.release();
+                try{
+                    wakeLock.release();
+                }catch (Exception e){
+                    FlyLog.e(e.toString());
+                }
                 isRunning.set(false);
                 FlyDown.delDownFile(otaPackage.filemd5);
                 notifyListener(CODE_08, 100, "升级包校验失败……");
@@ -301,7 +317,11 @@ public class Flyup implements IFlyup, FlyEvent {
         public void onPayloadApplicationComplete(int i) {
             switch (i) {
                 case UpdateEngine.ErrorCodeConstants.SUCCESS:
-                    wakeLock.release();
+                    try{
+                        wakeLock.release();
+                    }catch (Exception e){
+                        FlyLog.e(e.toString());
+                    }
                     isRunning.set(false);
                     isFinish.set(true);
                     notifyListener(CODE_12, 100, "系统升级完成，需要重启系统！");
@@ -318,7 +338,11 @@ public class Flyup implements IFlyup, FlyEvent {
                 case UpdateEngine.ErrorCodeConstants.DOWNLOAD_PAYLOAD_VERIFICATION_ERROR:
                 case UpdateEngine.ErrorCodeConstants.UPDATED_BUT_NOT_ACTIVE:
                 default:
-                    wakeLock.release();
+                    try{
+                        wakeLock.release();
+                    }catch (Exception e){
+                        FlyLog.e(e.toString());
+                    }
                     isRunning.set(false);
                     notifyListener(CODE_10, 100, "系统升级失败，错误码[" + i + "]");
                     FlyLog.e("系统升级失败，错误码[" + i + "]");
@@ -360,7 +384,11 @@ public class Flyup implements IFlyup, FlyEvent {
                                 new InputStreamReader(zipFile.getInputStream(entry)))) {
                             props = buffer.lines().toArray(String[]::new);
                         } catch (Exception e) {
-                            wakeLock.release();
+                            try{
+                                wakeLock.release();
+                            }catch (Exception e1){
+                                FlyLog.e(e1.toString());
+                            }
                             isRunning.set(false);
                             notifyListener(CODE_09, 100, "获取升级参数失败！");
                             FlyLog.e(e.toString());
@@ -372,7 +400,11 @@ public class Flyup implements IFlyup, FlyEvent {
                     }
                 }
             } catch (Exception e) {
-                wakeLock.release();
+                try{
+                    wakeLock.release();
+                }catch (Exception e1){
+                    FlyLog.e(e1.toString());
+                }
                 isRunning.set(false);
                 notifyListener(CODE_10, 100, "升级文件校验失败！");
                 FlyLog.e(e.toString());
@@ -387,7 +419,11 @@ public class Flyup implements IFlyup, FlyEvent {
                         payloadSize,
                         props);
             } catch (Exception e) {
-                wakeLock.release();
+                try{
+                    wakeLock.release();
+                }catch (Exception e1){
+                    FlyLog.e(e1.toString());
+                }
                 isRunning.set(false);
                 notifyListener(CODE_10, 100, "升级异常[%s" + e.toString() + "]");
                 FlyLog.e(e.toString());
