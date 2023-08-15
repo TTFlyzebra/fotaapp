@@ -35,14 +35,14 @@ android {
         release {
             storeFile file("../keystore/platform.jks")
             storePassword "123456"
-            keyAlias "quectel"
+            keyAlias "flyzebra"
             keyPassword "123456"
         }
 
         debug {
             storeFile file("../keystore/platform.jks")
             storePassword "123456"
-            keyAlias "quectel"
+            keyAlias "flyzebra"
             keyPassword "123456"
         }
     }
